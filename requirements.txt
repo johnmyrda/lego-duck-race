@@ -1,3 +1,4 @@
 adafruit-circuitpython-neopixel==6.3.15
 rpi-lgpio==0.6
 gpiozero==2.0.1
+buildhat==0.7.0
