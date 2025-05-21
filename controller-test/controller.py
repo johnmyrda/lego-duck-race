@@ -16,17 +16,55 @@ class Button:
             self.on_press_function()
         self.pressed = is_pressed
 
+class Joystick:
+
+    def __init__(self):
+        self.up = False
+        self.down = False
+        self.left = False
+        self.right = False
+
+    def update_state(self, up: bool, down: bool, left: bool, right: bool):
+        self.up = up
+        self.down = down
+        self.left = left
+        self.right = right
+
+    # Print ←↖↑↗→↘↓↙ when appropriate
+    def debug(self):
+        # ↖↑↗
+        if self.up:
+            if self.left:
+                return "↖"
+            elif self.right:
+                return "↗"
+            else:
+                return "↑"
+        # ↙↓↘
+        if self.down:
+            if self.left:
+                return "↙"
+            elif self.right:
+                return "↘"
+            else:
+                return "↓"
+        if self.left:
+            return "←"
+        if self.right:
+            return "→"
+        return "•"
+
 # Manufacturer: Baolian industry Co., Ltd
 # Product: TS-UAIB-OP02
 class Controller:
 
     def __init__(self):
         self.controller = hid.device()
-        self._update_thread = None
         self.vendor_id = 0x32be
         self.product_id = 0x2000
-        self.button_map = dict()
         self.__connect__()
+        self.joystick = Joystick()
+        self.button_map = dict()
         self.__setup_buttons__()
 
     def __connect__(self):
@@ -53,6 +91,7 @@ class Controller:
     def update_state(self):
         report = self.controller.read(8) # Only 7 bytes needed
         if report:
+            # print(report)
             buttons = self.button_map
             buttons['k1'].update_state(report[0] & 0b00000001)
             buttons['k2'].update_state(report[0] & 0b00000010)
@@ -67,6 +106,10 @@ class Controller:
             buttons['k11'].update_state(report[1] & 0b00000100)
             buttons['k12'].update_state(report[1] & 0b00001000)
             buttons['k13'].update_state(report[1] & 0b00010000)
+            self.joystick.left = (report[3] == 0)
+            self.joystick.right = (report[3] == 255)
+            self.joystick.up = (report[4] == 0)
+            self.joystick.down = (report[4] == 255)
 
     def debug_info(self):
         gamepad = self.controller
@@ -83,3 +126,4 @@ if __name__ == "__main__":
     controller.debug_info()
     while True:
         controller.update_state()
+        print(controller.joystick.debug(), end = "\r")
