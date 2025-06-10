@@ -1,5 +1,5 @@
 import hid
-from typing import Callable
+from typing import Callable, cast
 
 class Button:
 
@@ -8,10 +8,10 @@ class Button:
         self.on_press_function = lambda: print("You pressed: " + name)
         self.pressed = False
 
-    def on_press(self, action: Callable):
+    def on_press(self, action: Callable[..., None]) -> None:
         self.on_press_function = action
     
-    def update_state(self, is_pressed: bool):
+    def update_state(self, is_pressed: int) -> None:
         if self.pressed == False and is_pressed:
             self.on_press_function()
         self.pressed = is_pressed
@@ -59,17 +59,17 @@ class Joystick:
 class Controller:
 
     def __init__(self):
-        self.controller = hid.device()
+        self.controller = hid.device() # type: ignore
         self.vendor_id = 0x32be
         self.product_id = 0x2000
         self.__connect__()
         self.joystick = Joystick()
-        self.button_map = dict()
+        self.button_map= dict[str, Button]()
         self.__setup_buttons__()
 
     def __connect__(self):
-        self.controller.open(self.vendor_id, self.product_id)
-        self.controller.set_nonblocking(True)
+        self.controller.open(self.vendor_id, self.product_id) # type: ignore
+        self.controller.set_nonblocking(True) # type: ignore
         # Test for connection here?
 
     def __setup_buttons__(self):
@@ -82,14 +82,14 @@ class Controller:
         for name in buttons:
             self.button_map[name] = Button(name)
 
-    def get_button(self, name) -> Button:
+    def get_button(self, name: str) -> Button:
         return self.button_map[name]
 
-    def register_action(self, button: str, action: callable):
+    def register_action(self, button: str, action: Callable[..., None]) -> None:
         self.get_button(button).on_press(action)
 
     def update_state(self):
-        report = self.controller.read(8) # Only 7 bytes needed
+        report = cast(list[int], self.controller.read(8)) # type: ignore # Only 7 bytes needed
         if report:
             # print(report)
             buttons = self.button_map
@@ -112,12 +112,12 @@ class Controller:
             self.joystick.down = (report[4] == 255)
 
     def debug_info(self):
-        gamepad = self.controller
-        print("Error: " + gamepad.error())
-        print("Manufacturer: " + gamepad.get_manufacturer_string())
-        print("Product: " + gamepad.get_product_string())
-        print("Serial Number: " + gamepad.get_serial_number_string())
-        print("HID Report Descriptor: " + str(gamepad.get_report_descriptor()))
+        gamepad = self.controller # type: ignore
+        print("Error: " + gamepad.error()) # type: ignore
+        print("Manufacturer: " + gamepad.get_manufacturer_string()) # type: ignore
+        print("Product: " + gamepad.get_product_string()) # type: ignore
+        print("Serial Number: " + gamepad.get_serial_number_string()) # type: ignore
+        print("HID Report Descriptor: " + str(gamepad.get_report_descriptor())) # type: ignore
 
 # Simple test program to output input states
 if __name__ == "__main__":
