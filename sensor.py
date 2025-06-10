@@ -4,7 +4,7 @@ import time
 
 class Sensor:
 
-    def __init__(self, gpio_trigger: str, gpio_echo: str, name: str):
+    def __init__(self, gpio_trigger: int, gpio_echo: int, name: str):
         self.trigger = gpio_trigger
         self.echo = gpio_echo
         self.name = name
@@ -13,7 +13,7 @@ class Sensor:
         GPIO.setup(self.trigger, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
  
-    def distance(self):
+    def distance(self) -> float:
         # set Trigger to HIGH
         GPIO.output(self.trigger, True)
     
@@ -40,7 +40,7 @@ class Sensor:
     
         return distance
  
-    def distance_readout(self):
+    def distance_readout(self) -> str:
         distance = self.distance()
         return f"Sensor {self.name} Distance: {distance:.1f} cm"
 
