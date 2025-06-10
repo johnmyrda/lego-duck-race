@@ -12,6 +12,7 @@ class Sensor:
         #set GPIO direction (IN / OUT)
         GPIO.setup(self.trigger, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
+        print("Sensor " + name + " initialized")
  
     def distance(self) -> float:
         # set Trigger to HIGH
