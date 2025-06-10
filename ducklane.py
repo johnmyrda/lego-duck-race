@@ -12,12 +12,13 @@ class DuckLane:
         self.motor_port = motorPort
         self.motor = Motor(motorPort)
         self.sensor = sensor
-        button.on_press(lambda: self.move_forward(motor)) # type: ignore
+        button.on_press(lambda: self.move_forward()) # type: ignore
 
     def print_debug(self):
         print("Speed, Pos, Apos: " + str(self.motor.get())) # type: ignore
 
     def reset(self) -> None:
+        motor = self.motor
         motor_started = False
         motor_started_forwards = False
         motor_stalled = False
@@ -52,7 +53,7 @@ class DuckLane:
 
     def move_forward(self) -> None:
         print("Moving forward!")
-        self.motor.run_for_degrees(-500, 50)  # type: ignore
+        self.motor.run_for_degrees(-1000, 50)  # type: ignore
         print("Done moving")
 
 # Can detect speed in close to real time, check if stalled
@@ -60,7 +61,7 @@ class DuckLane:
 
     def update_state(self) -> None:
         distance = self.sensor.distance()
-        # print("Distance=" + str(distance))
+        print("Distance=" + str(distance))
         if (distance < 2):
             print("Resetting because distance=" + str(distance))
             self.button.on_press(lambda: print("Button disabled during reset"))
@@ -76,6 +77,8 @@ if __name__ == "__main__":
     GPIO_ECHO_A = 24
     sensor = Sensor(GPIO_TRIGGER_A, GPIO_ECHO_A, "A")
     lane = DuckLane("A", button, sensor)
+    print("Ducklane starting")
     while True:
         controller.update_state()
         lane.update_state()
+        time.sleep(.5)
