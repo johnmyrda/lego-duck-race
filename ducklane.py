@@ -4,7 +4,12 @@ from buildhat import Motor # type: ignore
 from windowed_list import WindowedList
 from sensor import Sensor
 from measurement_logger import MeasurementLogger
+from enum import Enum
 
+class LaneState(Enum):
+    STOPPED = 1
+    MOVING = 2
+    RESETTING = 3
 
 class DuckLane:
 
@@ -16,12 +21,18 @@ class DuckLane:
         self.sensor = sensor
         self.reset_distance = reset_distance
         self.logger = MeasurementLogger(1000, self.name)
+        self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward()) # type: ignore
+
+    def _update_status(self, state: LaneState):
+        self.print("Updating state to " + state.name)
+        self.status = state
 
     def print_debug(self):
         self.print("Speed, Pos, Apos: " + str(self.motor.get())) # type: ignore
 
     def reset(self) -> None:
+        self._update_status(LaneState.RESETTING)
         motor = self.motor
         motor_started = False
         motor_started_forwards = False
@@ -54,16 +65,17 @@ class DuckLane:
             motor.start(20) # type: ignore
 
         motor.stop() # type: ignore
+        self._update_status(LaneState.STOPPED)
 
     def move_forward(self) -> None:
-        self.print("Moving forward!")
+        self._update_status(LaneState.MOVING)
         self.motor.run_for_degrees(-1000, 50)  # type: ignore
-        self.print("Done moving")
+        self._update_status(LaneState.STOPPED)
 
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
-    def update_state(self) -> None:
+    def check_distance(self) -> None:
         distance = self.sensor.distance()
         self.logger.info("Distance=" + str(distance))
         if (distance < self.reset_distance):
@@ -99,6 +111,6 @@ if __name__ == "__main__":
     print("Ducklane starting")
     while True:
         controller.update_state()
-        lane_a.update_state()
-        lane_b.update_state()
-        lane_c.update_state()
+        lane_a.check_distance()
+        lane_b.check_distance()
+        lane_c.check_distance()

@@ -15,15 +15,15 @@ class MeasurementLogger:
         self.last_log_time: int = 0
         print("Creating logger at " + str(self.level))
 
-    def debug(self, message):
+    def debug(self, message: str):
         if self.level >= LogLevel.DEBUG:
             self.log(message)
 
-    def info(self, message):
+    def info(self, message: str):
         if self.level >= LogLevel.INFO:
             self.log(message)
 
-    def error(self, message):
+    def error(self, message: str):
         if self.level >= LogLevel.ERROR:
             self.log(message)
 
