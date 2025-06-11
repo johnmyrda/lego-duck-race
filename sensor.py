@@ -8,6 +8,7 @@ class Sensor:
         self.trigger = gpio_trigger
         self.echo = gpio_echo
         self.name = name
+        self.last_measurement: int = time.time_ns()
         GPIO.setmode(GPIO.BCM) # Use Broadcom GPIO 00..nn numbers
         #set GPIO direction (IN / OUT)
         GPIO.setup(self.trigger, GPIO.OUT)
@@ -15,6 +16,13 @@ class Sensor:
         print("Sensor " + name + " initialized")
  
     def distance(self) -> float:
+        # Hack to make sure we don't read too often
+        now = time.time_ns()
+        elapsed_ns = now - self.last_measurement
+        if (elapsed_ns < 10000000): # 10 milliseconds
+            time.sleep(.01)
+        self.last_measurement = time.time_ns()
+
         # set Trigger to HIGH
         GPIO.output(self.trigger, True)
     
@@ -68,8 +76,7 @@ if __name__ == '__main__':
             print(dist_a)
             print(dist_b)
             print(dist_c)
-            time.sleep(1)
- 
+
         # Reset by pressing CTRL + C
     except KeyboardInterrupt:
         print("Measurement stopped by User")
