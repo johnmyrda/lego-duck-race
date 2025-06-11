@@ -8,20 +8,24 @@ class Sensor:
         self.trigger = gpio_trigger
         self.echo = gpio_echo
         self.name = name
-        self.last_measurement: int = time.time_ns()
+        self.last_measurement_time: int = 0
+        self.last_distance = -1
         GPIO.setmode(GPIO.BCM) # Use Broadcom GPIO 00..nn numbers
         #set GPIO direction (IN / OUT)
         GPIO.setup(self.trigger, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
         print("Sensor " + name + " initialized")
- 
+
+    # Returns sensor distance, or previous sensor distance if
+    # it's been too soon since the function has been called
     def distance(self) -> float:
         # Hack to make sure we don't read too often
         now = time.time_ns()
-        elapsed_ns = now - self.last_measurement
-        if (elapsed_ns < 10000000): # 10 milliseconds
-            time.sleep(.01)
-        self.last_measurement = time.time_ns()
+        elapsed_ns = now - self.last_measurement_time
+        if (elapsed_ns < 100000000): # 100 milliseconds
+            return self.last_distance
+
+        self.last_measurement_time = time.time_ns()
 
         # set Trigger to HIGH
         GPIO.output(self.trigger, True)
@@ -46,7 +50,8 @@ class Sensor:
         # multiply with the sonic speed (34300 cm/s)
         # and divide by 2, because there and back
         distance = (TimeElapsed * 34300) / 2
-    
+        self.last_distance = distance
+
         return distance
  
     def distance_readout(self) -> str:
