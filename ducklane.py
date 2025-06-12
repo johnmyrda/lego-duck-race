@@ -36,7 +36,14 @@ class DuckLane:
     def reset(self):
         if self.status != LaneState.RESETTING:
             self._update_status(LaneState.RESETTING)
-            threading.Thread(target=self._reset, daemon=True).start()
+            threading.Thread(target=self._reset_alt, daemon=True).start()
+
+    def _reset_alt(self) -> None:
+        self.logger.debug("Alternate Reset")
+        while self.sensor.distance() < self.start_pos:
+            self.move_backward_override()
+            time.sleep(.1)
+        self._reset()
 
     def _reset(self) -> None:
         self.logger.debug("Resetting because distance=" + str(self.sensor.distance))
@@ -49,32 +56,31 @@ class DuckLane:
         speed_window = WindowedList(8)
         reset_speed = 30
         motor.stop()
-        while self.sensor.distance() < self.start_pos:
-            while not motor_started and not motor_stalled:
-                motor.start(reset_speed) # type: ignore
-                # print_debug(motor)
-                speed_window.push(motor.get_speed()) # type: ignore
-                if speed_window.mean() > 0.0:
-                    motor_started = True
-                    self.print("Started Reset")
-                if speed_window.mean() < 0:
-                    motor_started_forwards = True
-                    self.print("Started forwards")
-                if speed_window.stalled() and not motor_started_forwards:
-                    motor_stalled = True
-                    self.print("Stalled")
-                # Add time between readings
-                time.sleep(.05)
-            
-            reset_completed = False
-            while not reset_completed and not motor_stalled:
-                self.print_debug()
-                speed_window.push(motor.get_speed())  # type: ignore
-                if speed_window.stalled():
-                  reset_completed = True
-                  self.print("Reset Complete!")
-                time.sleep(.1)
-                motor.start(reset_speed) # type: ignore
+        while not motor_started and not motor_stalled:
+            motor.start(reset_speed) # type: ignore
+            # print_debug(motor)
+            speed_window.push(motor.get_speed()) # type: ignore
+            if speed_window.mean() > 0.0:
+                motor_started = True
+                self.print("Started Reset")
+            if speed_window.mean() < 0:
+                motor_started_forwards = True
+                self.print("Started forwards")
+            if speed_window.stalled() and not motor_started_forwards:
+                motor_stalled = True
+                self.print("Stalled")
+            # Add time between readings
+            time.sleep(.05)
+
+        reset_completed = False
+        while not reset_completed and not motor_stalled:
+            self.print_debug()
+            speed_window.push(motor.get_speed())  # type: ignore
+            if speed_window.stalled():
+              reset_completed = True
+              self.print("Reset Complete!")
+            time.sleep(.1)
+            motor.start(reset_speed) # type: ignore
             
         motor.stop() # type: ignore
         self._update_status(LaneState.STOPPED)
@@ -104,14 +110,19 @@ class DuckLane:
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
-    def check_distance(self) -> None:
-        distance = self.sensor.distance()
-        self.logger.debug(f"Distance={distance:.2f}")
-        if (distance < self.reset_distance):
+    def update(self) -> None:
+        if self.passed_finish_line():
             self.reset()
 
     def print(self, message: str):
         print(self.name + ": " + message)
+
+    def passed_finish_line(self) -> bool:
+        distance = self.sensor.distance()
+        self.logger.debug(f"Distance={distance:.2f}")
+        if distance < self.reset_distance:
+            return True
+        return False
 
 if __name__ == "__main__":
     controller = Controller()
@@ -137,6 +148,6 @@ if __name__ == "__main__":
     print("Ducklane starting")
     while True:
         controller.update_state()
-        lane_a.check_distance()
-        lane_b.check_distance()
-        lane_c.check_distance()
+        lane_a.update()
+        lane_b.update()
+        lane_c.update()
