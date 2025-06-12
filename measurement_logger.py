@@ -8,10 +8,10 @@ class LogLevel(IntEnum):
 
 class MeasurementLogger:
 
-    def __init__(self, max_frequency_ms: float, name: str, level: LogLevel = LogLevel.INFO):
+    def __init__(self, min_period_ms: float, name: str, level: LogLevel = LogLevel.INFO):
         self.level = level
         self.name = name
-        self.max_frequency_ns = max_frequency_ms * 1000000
+        self.min_period_ns = min_period_ms * 1000000
         self.last_log_time: int = 0
         print("Creating logger at " + str(self.level.name))
 
@@ -31,7 +31,7 @@ class MeasurementLogger:
     def log(self, message: str):
         now = time.time_ns()
         elapsed_ns = now - self.last_log_time
-        if (elapsed_ns > self.max_frequency_ns):
+        if (elapsed_ns > self.min_period_ns):
             print(self.name + ": " + message)
             self.last_log_time = time.time_ns()
             return

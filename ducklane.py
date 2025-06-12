@@ -92,13 +92,21 @@ class DuckLane:
         self.motor.stop()
         self._update_status(LaneState.STOPPED)
 
+    def move_forward_override(self):
+        self.motor.start(-100)  # type: ignore
+
+    def move_backward_override(self):
+        self.motor.start(100)  # type: ignore
+
+    def stop(self):
+        self.motor.stop()
 
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
     def check_distance(self) -> None:
         distance = self.sensor.distance()
-        self.logger.debug("Distance=" + str(distance))
+        self.logger.debug(f"Distance={distance:.2f}")
         if (distance < self.reset_distance):
             self.reset()
 
