@@ -22,7 +22,7 @@ class Sensor:
         # Hack to make sure we don't read too often
         now = time.time_ns()
         elapsed_ns = now - self.last_measurement_time
-        if (elapsed_ns < 100000000): # 100 milliseconds
+        if (elapsed_ns < 200000000): # 200 milliseconds
             return self.last_distance
 
         self.last_measurement_time = time.time_ns()

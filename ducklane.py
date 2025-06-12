@@ -1,9 +1,10 @@
 from controller import Controller, Button
 import time
+import threading
 from buildhat import Motor # type: ignore
 from windowed_list import WindowedList
 from sensor import Sensor
-from measurement_logger import MeasurementLogger
+from measurement_logger import MeasurementLogger, LogLevel
 from enum import Enum
 
 class LaneState(Enum):
@@ -13,14 +14,15 @@ class LaneState(Enum):
 
 class DuckLane:
 
-    def __init__(self, motorPort: str, button: Button, sensor: Sensor, reset_distance: int = 5):
+    def __init__(self, motorPort: str, button: Button, sensor: Sensor, reset_distance: int = 5, start_pos: int = 36):
         self.button = button
         self.name = "Lane " + motorPort
         self.motor_port = motorPort
         self.motor = Motor(motorPort)
         self.sensor = sensor
         self.reset_distance = reset_distance
-        self.logger = MeasurementLogger(1000, self.name)
+        self.start_pos = start_pos
+        self.logger = MeasurementLogger(1000, self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward()) # type: ignore
 
@@ -31,58 +33,74 @@ class DuckLane:
     def print_debug(self):
         self.print("Speed, Pos, Apos: " + str(self.motor.get())) # type: ignore
 
-    def reset(self) -> None:
-        self._update_status(LaneState.RESETTING)
+    def reset(self):
+        if self.status != LaneState.RESETTING:
+            self._update_status(LaneState.RESETTING)
+            threading.Thread(target=self._reset, daemon=True).start()
+
+    def _reset(self) -> None:
+        self.logger.debug("Resetting because distance=" + str(self.sensor.distance))
+        self.button.on_press(lambda: self.print("Button disabled during reset"))
+
         motor = self.motor
         motor_started = False
         motor_started_forwards = False
         motor_stalled = False
-        speed_window = WindowedList(5)
-        while not motor_started and not motor_stalled:
-            motor.start(20) # type: ignore
-            # print_debug(motor)
-            speed_window.push(motor.get_speed()) # type: ignore
-            if speed_window.mean() > 0.0:
-                motor_started = True
-                self.print("Started Reset")
-            if speed_window.mean() < 0:
-                motor_started_forwards = True
-                self.print("Started forwards")
-            if speed_window.stalled() and not motor_started_forwards:
-                motor_stalled = True
-                self.print("Stalled")
-            # Add time between readings
-            time.sleep(.05)
-
-        reset_completed = False
-        while not reset_completed and not motor_stalled:
-            self.print_debug()
-            speed_window.push(motor.get_speed())  # type: ignore
-            if speed_window.stalled():
-              reset_completed = True
-              self.print("Reset Complete!")
-            time.sleep(.1)
-            motor.start(20) # type: ignore
-
+        speed_window = WindowedList(8)
+        reset_speed = 30
+        motor.stop()
+        while self.sensor.distance() < self.start_pos:
+            while not motor_started and not motor_stalled:
+                motor.start(reset_speed) # type: ignore
+                # print_debug(motor)
+                speed_window.push(motor.get_speed()) # type: ignore
+                if speed_window.mean() > 0.0:
+                    motor_started = True
+                    self.print("Started Reset")
+                if speed_window.mean() < 0:
+                    motor_started_forwards = True
+                    self.print("Started forwards")
+                if speed_window.stalled() and not motor_started_forwards:
+                    motor_stalled = True
+                    self.print("Stalled")
+                # Add time between readings
+                time.sleep(.05)
+            
+            reset_completed = False
+            while not reset_completed and not motor_stalled:
+                self.print_debug()
+                speed_window.push(motor.get_speed())  # type: ignore
+                if speed_window.stalled():
+                  reset_completed = True
+                  self.print("Reset Complete!")
+                time.sleep(.1)
+                motor.start(reset_speed) # type: ignore
+            
         motor.stop() # type: ignore
         self._update_status(LaneState.STOPPED)
+        self.button.on_press(lambda: self.move_forward()) # type: ignore
 
     def move_forward(self) -> None:
-        self._update_status(LaneState.MOVING)
-        self.motor.run_for_degrees(-1000, 50)  # type: ignore
+        if self.status == LaneState.STOPPED:
+            self._update_status(LaneState.MOVING)
+            threading.Thread(target=self._move_forward, daemon=True).start()
+
+    def _move_forward(self) -> None:
+        self.motor.start(-50)  # type: ignore
+        # self.motor.run_for_degrees(720, -50)  # type: ignore
+        time.sleep(2)
+        self.motor.stop()
         self._update_status(LaneState.STOPPED)
+
 
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
     def check_distance(self) -> None:
         distance = self.sensor.distance()
-        self.logger.info("Distance=" + str(distance))
+        self.logger.debug("Distance=" + str(distance))
         if (distance < self.reset_distance):
-            self.print("Resetting because distance=" + str(distance))
-            self.button.on_press(lambda: print("Button disabled during reset"))
             self.reset()
-            self.button.on_press(lambda: self.move_forward()) # type: ignore
 
     def print(self, message: str):
         print(self.name + ": " + message)

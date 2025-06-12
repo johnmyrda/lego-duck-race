@@ -13,18 +13,18 @@ class MeasurementLogger:
         self.name = name
         self.max_frequency_ns = max_frequency_ms * 1000000
         self.last_log_time: int = 0
-        print("Creating logger at " + str(self.level))
+        print("Creating logger at " + str(self.level.name))
 
     def debug(self, message: str):
-        if self.level >= LogLevel.DEBUG:
+        if self.level <= LogLevel.DEBUG:
             self.log(message)
 
     def info(self, message: str):
-        if self.level >= LogLevel.INFO:
+        if self.level <= LogLevel.INFO:
             self.log(message)
 
     def error(self, message: str):
-        if self.level >= LogLevel.ERROR:
+        if self.level <= LogLevel.ERROR:
             self.log(message)
 
     # Only log if it's been long enough since the last log
