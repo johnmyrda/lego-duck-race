@@ -37,17 +37,16 @@ class DuckLane:
     def reset(self):
         if self.status != LaneState.RESETTING:
             self._update_status(LaneState.RESETTING)
+            self.logger.debug("Resetting with distance=" + str(self.sensor.distance()))
             threading.Thread(target=self._reset_alt, daemon=True).start()
 
     def _reset_alt(self) -> None:
-        self.logger.debug("Alternate Reset")
         while self.sensor.distance() < self.start_pos:
             self.move_backward_override()
             time.sleep(.1)
         self._reset()
 
     def _reset(self) -> None:
-        self.logger.debug("Resetting because distance=" + str(self.sensor.distance()))
         self.button.on_press(lambda: self.print("Button disabled during reset"))
 
         motor = self.motor
