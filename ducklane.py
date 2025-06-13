@@ -47,7 +47,7 @@ class DuckLane:
         self._reset()
 
     def _reset(self) -> None:
-        self.logger.debug("Resetting because distance=" + str(self.sensor.distance))
+        self.logger.debug("Resetting because distance=" + str(self.sensor.distance()))
         self.button.on_press(lambda: self.print("Button disabled during reset"))
 
         motor = self.motor
