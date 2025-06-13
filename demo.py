@@ -1,10 +1,8 @@
+from controller import Controller
 from peripherals import detectMotor, detectSensor
 import time
 from buildhat import Motor, ColorDistanceSensor
 from windowed_list import WindowedList
-from gpiozero import Button
-
-# hub.system.set_stop_button(None)
 
 def print_debug(motor: Motor):
   data = motor.get()
@@ -43,15 +41,6 @@ def reset(motor: Motor):
 
   motor.stop()
 
-# reset(motor)
-
-# print("Moving forward")
-# motor.run_for_degrees(180, 50)
-
-# motor.start(50)
-# time.sleep(1)
-# motor.stop()
-
 def move_forward(motor: Motor):
   print("Moving forward!")
   motor.run_for_degrees(-500, 50)
@@ -60,24 +49,25 @@ def move_forward(motor: Motor):
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
-def setup(button: Button, motor: Motor, sensor: ColorDistanceSensor):
+def setup(controller: Controller, motor: Motor, sensor: ColorDistanceSensor):
   sensor.on()
-  button.when_activated = lambda: move_forward(motor)
-  button.when_held = lambda: reset(motor)
+  controller.register_action('k1', lambda: move_forward(motor))
 
-def main(button: Button, motor: Motor, sensor: ColorDistanceSensor):
+def main(controller: Controller, motor: Motor, sensor: ColorDistanceSensor):
   while True:
+      controller.update_state()
       distance = sensor.get_distance()
       # print("Distance=" + str(distance))
       if (distance < 2):
           print("Resetting because distance=" + str(distance))
-          button.when_activated = lambda: print("Button disabled during reset")
+          controller.register_action('k1', lambda: print("Button disabled during reset"))
           reset(motor)
-          button.when_activated = lambda: move_forward(motor)
+          controller.register_action('k1', lambda: move_forward(motor))
 
 if __name__ == "__main__":
-  button = Button(26, hold_time=3)
+  controller = Controller()
+  controller.debug_info()
   motor = detectMotor()
   sensor = detectSensor()
-  setup(button, motor, sensor)
-  main(button, motor, sensor)
+  setup(controller, motor, sensor)
+  main(controller, motor, sensor)
