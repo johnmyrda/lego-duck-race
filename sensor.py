@@ -2,6 +2,7 @@
 import RPi.GPIO as GPIO
 import time
 
+# HC-SR04 Ultrasonic Distance Sensor
 class Sensor:
 
     def __init__(self, gpio_trigger: int, gpio_echo: int, name: str):
@@ -10,6 +11,8 @@ class Sensor:
         self.name = name
         self.last_measurement_time: int = 0
         self.last_distance = -1
+        max_distance_cm = 200.0
+        self.max_sensor_wait_time = .01
         GPIO.setmode(GPIO.BCM) # Use Broadcom GPIO 00..nn numbers
         #set GPIO direction (IN / OUT)
         GPIO.setup(self.trigger, GPIO.OUT)
@@ -34,17 +37,24 @@ class Sensor:
         time.sleep(0.00001)
         GPIO.output(self.trigger, False)
     
+
+        TimeoutStartTime = time.time()
         StartTime = time.time()
         StopTime = time.time()
-    
+
         # save StartTime
         while GPIO.input(self.echo) == 0:
             StartTime = time.time()
-    
+            # print ("StartTime: " + str(StartTime))
+            if ( StartTime - TimeoutStartTime ) > self.max_sensor_wait_time:
+                return self.last_distance
+
         # save time of arrival
         while GPIO.input(self.echo) == 1:
             StopTime = time.time()
-    
+            if ( StopTime - TimeoutStartTime ) > self.max_sensor_wait_time:
+                return self.last_distance
+
         # time difference between start and arrival
         TimeElapsed = StopTime - StartTime
         # multiply with the sonic speed (34300 cm/s)

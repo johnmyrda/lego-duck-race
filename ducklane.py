@@ -4,7 +4,7 @@ import threading
 from buildhat import Motor # type: ignore
 from windowed_list import WindowedList
 from sensor import Sensor
-from measurement_logger import MeasurementLogger, LogLevel
+from measurement_logger import MeasurementLogger, LogLevel, Logger
 from enum import Enum
 
 class LaneState(Enum):
@@ -22,7 +22,8 @@ class DuckLane:
         self.sensor = sensor
         self.reset_distance = reset_distance
         self.start_pos = start_pos
-        self.logger = MeasurementLogger(1000, self.name, LogLevel.DEBUG)
+        self.sensor_logger = MeasurementLogger(2000, "Sensor " + self.name, LogLevel.DEBUG)
+        self.logger = Logger(self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward()) # type: ignore
 
@@ -119,7 +120,7 @@ class DuckLane:
 
     def passed_finish_line(self) -> bool:
         distance = self.sensor.distance()
-        self.logger.debug(f"Distance={distance:.2f}")
+        self.sensor_logger.debug(f"Distance={distance:.2f}cm")
         if distance < self.reset_distance:
             return True
         return False
