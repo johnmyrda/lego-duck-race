@@ -14,7 +14,6 @@ class Game:
         self.lanes = lanes
         self.joystick_direction = Direction.NONE
         self.selected_lane = 0
-        self.last_winner = None
 
     # Controls are reversed due to joystick placement
     def update_joystick(self):
@@ -68,13 +67,12 @@ class Game:
 
     def _update(self):
         controller.update_state()
-        for lane in self.lanes:
-            lane.update()
+        # for lane in self.lanes:
+        #     lane.update()
         self.update_joystick()
         winner = self.get_winner()
-        if winner != None and winner != self.last_winner:
+        if winner != None:
             print(f"Winner: {winner.name}")
-            self.last_winner = winner
             self.reset_all()
 
     def update(self):
@@ -93,6 +91,8 @@ class Game:
 
     def get_winner(self) -> DuckLane | None:
         for lane in self.lanes:
+            if lane.status == LaneState.RESETTING:
+                return None
             if lane.passed_finish_line():
                 return lane
         else:
