@@ -2,16 +2,17 @@
 import RPi.GPIO as GPIO
 import time
 
+from sensor_interface import SensorInterface
+
 # HC-SR04 Ultrasonic Distance Sensor
-class Sensor:
+class Sensor(SensorInterface):
 
     def __init__(self, gpio_trigger: int, gpio_echo: int, name: str):
+        super().__init__(name)
         self.trigger = gpio_trigger
         self.echo = gpio_echo
-        self.name = name
         self.last_measurement_time: int = 0
         self.last_distance = -1
-        max_distance_cm = 200.0
         self.max_sensor_wait_time = .01
         GPIO.setmode(GPIO.BCM) # Use Broadcom GPIO 00..nn numbers
         #set GPIO direction (IN / OUT)
@@ -63,10 +64,7 @@ class Sensor:
         self.last_distance = distance
 
         return distance
- 
-    def distance_readout(self) -> str:
-        distance = self.distance()
-        return f"Sensor {self.name} Distance: {distance:.1f} cm"
+
 
 if __name__ == '__main__':
     # Sensor A
