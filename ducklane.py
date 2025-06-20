@@ -65,7 +65,7 @@ class DuckLane:
             self.reset()
 
     def print(self, message: str):
-        print(self.name + ": " + message)
+        print(f"Lane {self.name}: {message}")
 
     def passed_finish_line(self) -> bool:
         distance = self.sensor.distance()
@@ -85,19 +85,19 @@ if __name__ == "__main__":
     GPIO_ECHO_A = 24
     sensor_a = Sensor(GPIO_TRIGGER_A, GPIO_ECHO_A, "A")
     motor_a = LegoMotor("A")
-    lane_a = DuckLane("Lane A", motor_a, button_a, sensor_a)
+    lane_a = DuckLane("A", motor_a, button_a, sensor_a)
     # Lane B
     GPIO_TRIGGER_B = 25
     GPIO_ECHO_B = 5
     sensor_b = Sensor(GPIO_TRIGGER_B, GPIO_ECHO_B, "B")
     motor_b = LegoMotor("B")
-    lane_b = DuckLane("Lane B", motor_b, button_b, sensor_b)
+    lane_b = DuckLane("B", motor_b, button_b, sensor_b)
     # Lane C
     GPIO_TRIGGER_C = 6
     GPIO_ECHO_C = 12
     sensor_c = Sensor(GPIO_TRIGGER_C, GPIO_ECHO_C, "C")
     motor_c = LegoMotor("C")
-    lane_c = DuckLane("Lane C", motor_c, button_c, sensor_c)
+    lane_c = DuckLane("C", motor_c, button_c, sensor_c)
     print("Ducklane starting")
     while True:
         controller.update_state()

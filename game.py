@@ -1,4 +1,5 @@
 from controller import Controller, Direction
+from motor import LegoMotor
 from sensor import Sensor
 from ducklane import DuckLane, LaneState
 import time
@@ -42,7 +43,7 @@ class Game:
                     if i == self.selected_lane:
                         self.move_lane(i, new_direction)
                     else:
-                        self.lanes[i].stop()
+                        self.lanes[i].motor.stop()
                 self.move_lane(self.selected_lane, new_direction)
             return # Return early to avoid changing lane while moving
 
@@ -50,7 +51,7 @@ class Game:
             if new_direction == Direction.NONE:
                 if cur_direction == Direction.LEFT or cur_direction == Direction.RIGHT:
                     for lane in self.lanes:
-                        lane.stop()
+                        lane.motor.stop()
                     return # Return early to avoid changing lane while moving
 
             if new_direction == Direction.UP:
@@ -61,9 +62,9 @@ class Game:
     def move_lane(self, lane_index: int, direction: Direction):
         lane = self.lanes[lane_index]
         if direction == Direction.LEFT:
-            lane.move_forward_override()
+            lane.motor.start(100)
         elif direction == Direction.RIGHT:
-            lane.move_backward_override()
+            lane.motor.start(-100)
 
     def _update(self):
         controller.update_state()
@@ -107,17 +108,20 @@ if __name__ == "__main__":
     GPIO_TRIGGER_A = 23
     GPIO_ECHO_A = 24
     sensor_a = Sensor(GPIO_TRIGGER_A, GPIO_ECHO_A, "A")
-    lane_a = DuckLane("A", button_a, sensor_a, start_pos=47)
+    motor_a = LegoMotor("A")
+    lane_a = DuckLane("A", motor_a, button_a, sensor_a, start_pos=47)
     # Lane B
     GPIO_TRIGGER_B = 25
     GPIO_ECHO_B = 5
     sensor_b = Sensor(GPIO_TRIGGER_B, GPIO_ECHO_B, "B")
-    lane_b = DuckLane("B", button_b, sensor_b)
+    motor_b = LegoMotor("B")
+    lane_b = DuckLane("B", motor_b, button_b, sensor_b)
     # Lane C
     GPIO_TRIGGER_C = 6
     GPIO_ECHO_C = 12
     sensor_c = Sensor(GPIO_TRIGGER_C, GPIO_ECHO_C, "C")
-    lane_c = DuckLane("C", button_c, sensor_c)
+    motor_c = LegoMotor("C")
+    lane_c = DuckLane("C", motor_c, button_c, sensor_c)
     game = Game(controller, [lane_a, lane_b, lane_c])
     while True:
         game.update()
