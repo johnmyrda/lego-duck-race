@@ -1,4 +1,4 @@
-from controller import Controller, Direction
+from arcade_controller import ArcadeController, Direction
 from motor import LegoMotor
 from sensor import Sensor
 from ducklane import DuckLane, LaneState
@@ -6,7 +6,7 @@ import time
 
 class Game:
 
-    def __init__(self, controller: Controller, lanes: list[DuckLane]):
+    def __init__(self, controller: ArcadeController, lanes: list[DuckLane]):
         self.update_period_ns = 10 * 1000000 # 1000000 ns per ms
         self.last_update_time: int = 0
         controller.debug_info()
@@ -100,7 +100,7 @@ class Game:
             return None
 
 if __name__ == "__main__":
-    controller = Controller()
+    controller = ArcadeController()
     button_a = controller.get_button("k1")
     button_b = controller.get_button("k2")
     button_c = controller.get_button("k3")

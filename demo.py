@@ -1,4 +1,4 @@
-from controller import Controller
+from arcade_controller import ArcadeController
 from peripherals import detectMotor, detectSensor
 import time
 from buildhat import Motor, ColorDistanceSensor
@@ -49,23 +49,23 @@ def move_forward(motor: Motor):
 # Can detect speed in close to real time, check if stalled
 # Window function useful but not necessary
 
-def setup(controller: Controller, motor: Motor, sensor: ColorDistanceSensor):
+def setup(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
   sensor.on()
   controller.register_action('k1', lambda: move_forward(motor))
 
-def main(controller: Controller, motor: Motor, sensor: ColorDistanceSensor):
+def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
   while True:
       controller.update_state()
       distance = sensor.get_distance()
       # print("Distance=" + str(distance))
-      if (distance < 2):
+      if distance < 2:
           print("Resetting because distance=" + str(distance))
           controller.register_action('k1', lambda: print("Button disabled during reset"))
           reset(motor)
           controller.register_action('k1', lambda: move_forward(motor))
 
 if __name__ == "__main__":
-  controller = Controller()
+  controller = ArcadeController()
   controller.debug_info()
   motor = detectMotor()
   sensor = detectSensor()

@@ -1,4 +1,4 @@
-from controller import Controller, Button
+from arcade_controller import ArcadeController, Button
 import time
 import threading
 from buildhat import Motor # type: ignore
@@ -75,7 +75,7 @@ class DuckLane:
         return False
 
 if __name__ == "__main__":
-    controller = Controller()
+    controller = ArcadeController()
     controller.debug_info()
     button_a = controller.get_button("k1")
     button_b = controller.get_button("k2")

@@ -5,7 +5,7 @@ from controller_base import *
 
 # Manufacturer: Baolian industry Co., Ltd
 # Product: TS-UAIB-OP02
-class Controller(ControllerBase):
+class ArcadeController(ControllerBase):
 
     def __init__(self, min_period_ms: int = 1):
         super().__init__()
@@ -22,7 +22,7 @@ class Controller(ControllerBase):
     def update_state(self) -> None:
         now = time.time_ns()
         elapsed_ns = now - self.last_log_time
-        if (elapsed_ns > self.min_period_ns):
+        if elapsed_ns > self.min_period_ns:
             report = cast(list[int], self.controller.read(8)) # type: ignore # Only 7 bytes needed
             if report:
                 # print(report)
@@ -56,7 +56,7 @@ class Controller(ControllerBase):
 # Simple test program to output input states
 if __name__ == "__main__":
     # Initialize Gamepad
-    controller = Controller()
+    controller = ArcadeController()
     controller.debug_info()
     while True:
         controller.update_state()
