@@ -1,21 +1,21 @@
-#Libraries
+# Libraries
 import RPi.GPIO as GPIO
 import time
 
 from sensor_interface import SensorInterface
 
+
 # HC-SR04 Ultrasonic Distance Sensor
 class Sensor(SensorInterface):
-
     def __init__(self, gpio_trigger: int, gpio_echo: int, name: str):
         super().__init__(name)
         self.trigger = gpio_trigger
         self.echo = gpio_echo
         self.last_measurement_time: int = 0
         self.last_distance = -1
-        self.max_sensor_wait_time = .01
-        GPIO.setmode(GPIO.BCM) # Use Broadcom GPIO 00..nn numbers
-        #set GPIO direction (IN / OUT)
+        self.max_sensor_wait_time = 0.01
+        GPIO.setmode(GPIO.BCM)  # Use Broadcom GPIO 00..nn numbers
+        # set GPIO direction (IN / OUT)
         GPIO.setup(self.trigger, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
         print("Sensor " + name + " initialized")
@@ -26,18 +26,17 @@ class Sensor(SensorInterface):
         # Hack to make sure we don't read too often
         now = time.time_ns()
         elapsed_ns = now - self.last_measurement_time
-        if elapsed_ns < 200000000: # 200 milliseconds
+        if elapsed_ns < 200000000:  # 200 milliseconds
             return self.last_distance
 
         self.last_measurement_time = time.time_ns()
 
         # set Trigger to HIGH
         GPIO.output(self.trigger, True)
-    
+
         # set Trigger after 0.01ms to LOW
         time.sleep(0.00001)
         GPIO.output(self.trigger, False)
-    
 
         timeout_start_time = time.time()
         start_time = time.time()
@@ -47,13 +46,13 @@ class Sensor(SensorInterface):
         while GPIO.input(self.echo) == 0:
             start_time = time.time()
             # print ("StartTime: " + str(StartTime))
-            if ( start_time - timeout_start_time ) > self.max_sensor_wait_time:
+            if (start_time - timeout_start_time) > self.max_sensor_wait_time:
                 return self.last_distance
 
         # save time of arrival
         while GPIO.input(self.echo) == 1:
             stop_time = time.time()
-            if ( stop_time - timeout_start_time ) > self.max_sensor_wait_time:
+            if (stop_time - timeout_start_time) > self.max_sensor_wait_time:
                 return self.last_distance
 
         # time difference between start and arrival
@@ -66,7 +65,7 @@ class Sensor(SensorInterface):
         return distance
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Sensor A
     GPIO_TRIGGER_A = 23
     GPIO_ECHO_A = 24
@@ -85,7 +84,7 @@ if __name__ == '__main__':
             dist_a = sensor_a.distance_readout()
             dist_b = sensor_b.distance_readout()
             dist_c = sensor_c.distance_readout()
-            print("-"*len(dist_a))
+            print("-" * len(dist_a))
             print(dist_a)
             print(dist_b)
             print(dist_c)

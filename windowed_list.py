@@ -1,5 +1,4 @@
 class WindowedList:
-
     def __init__(self, size: int):
         self.size = size
         self.windowed_list = [0] * size
@@ -17,7 +16,7 @@ class WindowedList:
         return self.windowed_list.count(self.windowed_list[0]) == self.size
 
     def stalled(self):
-        return ( self.readings >= self.size and self.all_same() and self.mean() == 0.0 )
-    
+        return self.readings >= self.size and self.all_same() and self.mean() == 0.0
+
     def moving(self):
-        return ( self.readings >= self.size and self.mean() != 0.0 )
+        return self.readings >= self.size and self.mean() != 0.0

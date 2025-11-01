@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from enum import IntEnum
 
+
 # When spun clockwise, which way does the duck go?
 class MotorDirection(IntEnum):
     FORWARDS = 1
     BACKWARDS = -1
 
-class MotorInterface(ABC):
 
+class MotorInterface(ABC):
     def __init__(self, name: str, direction: MotorDirection = MotorDirection.FORWARDS):
         self.name = name
         self.direction = direction

@@ -2,8 +2,8 @@ from typing import Callable
 from enum import Enum
 from abc import abstractmethod, ABC
 
-class Button:
 
+class Button:
     def __init__(self, name: str):
         self.name = name
         self.on_press_function = lambda: print("You pressed: " + name)
@@ -16,9 +16,10 @@ class Button:
         self.on_press_function()
 
     def update_state(self, is_pressed: int) -> None:
-        if self.pressed == False and is_pressed:
+        if not self.pressed and is_pressed:
             self.press()
         self.pressed = is_pressed
+
 
 class Direction(Enum):
     UP = "↑"
@@ -27,8 +28,8 @@ class Direction(Enum):
     RIGHT = "→"
     NONE = "•"
 
-class Joystick:
 
+class Joystick:
     def __init__(self):
         self.up = False
         self.down = False
@@ -65,23 +66,34 @@ class Joystick:
             return "→"
         return "•"
 
+
 # Manufacturer: Baolian industry Co., Ltd
 # Product: TS-UAIB-OP02
 class ControllerBase(ABC):
-
     def __init__(self):
-        self.vendor_id = 0x32be
+        self.vendor_id = 0x32BE
         self.product_id = 0x2000
         self.joystick = Joystick()
-        self.button_map= dict[str, Button]()
+        self.button_map = dict[str, Button]()
         self.__setup_buttons__()
 
     def __setup_buttons__(self):
         buttons = [
-            # K1-8 are in the first bitfield      
-            'k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8',
-            # K9-13 are in the second bitfield      
-            'k9', 'k10', 'k11', 'k12', 'k13'
+            # K1-8 are in the first bitfield
+            "k1",
+            "k2",
+            "k3",
+            "k4",
+            "k5",
+            "k6",
+            "k7",
+            "k8",
+            # K9-13 are in the second bitfield
+            "k9",
+            "k10",
+            "k11",
+            "k12",
+            "k13",
         ]
         for name in buttons:
             self.button_map[name] = Button(name)
@@ -93,8 +105,8 @@ class ControllerBase(ABC):
     def update_state(self):
         pass
 
-class FakeController(ControllerBase):
 
+class FakeController(ControllerBase):
     def __init__(self):
         super().__init__()
 

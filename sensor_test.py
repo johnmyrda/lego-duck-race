@@ -1,8 +1,8 @@
 from sensor_interface import FakeSensor
 import unittest
 
-class TestFakeSensor(unittest.TestCase):
 
+class TestFakeSensor(unittest.TestCase):
     def test_check_distance(self):
         sensor = FakeSensor("Test Sensor")
         distance = sensor.distance()
@@ -15,7 +15,3 @@ class TestFakeSensor(unittest.TestCase):
         self.assertIn("Testarooni", readout)
         distance = sensor.distance()
         self.assertIn(str(distance), readout)
-
-
-if __name__ == '__main__':
-    unittest.main()

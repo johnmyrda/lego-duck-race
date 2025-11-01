@@ -1,31 +1,43 @@
-from arcade_controller import ArcadeController, Button
+from arcade_controller import ArcadeController
 import time
 import threading
-from buildhat import Motor # type: ignore
+
+from controller_base import Button
 from motor import LegoMotor
 from motor_interface import MotorInterface
 from sensor import Sensor
 from measurement_logger import MeasurementLogger, LogLevel, Logger
 from enum import Enum
 
+
 class LaneState(Enum):
     STOPPED = 1
     MOVING = 2
     RESETTING = 3
 
-class DuckLane:
 
-    def __init__(self, name: str, motor: MotorInterface, button: Button, sensor: Sensor, reset_distance: int = 5, start_pos: int = 36):
+class DuckLane:
+    def __init__(
+        self,
+        name: str,
+        motor: MotorInterface,
+        button: Button,
+        sensor: Sensor,
+        reset_distance: int = 5,
+        start_pos: int = 36,
+    ):
         self.button = button
         self.name = name
         self.motor = motor
         self.sensor = sensor
         self.reset_distance = reset_distance
         self.start_pos = start_pos
-        self.sensor_logger = MeasurementLogger(2000, "Sensor " + self.name, LogLevel.DEBUG)
+        self.sensor_logger = MeasurementLogger(
+            2000, "Sensor " + self.name, LogLevel.DEBUG
+        )
         self.logger = Logger(self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
-        button.on_press(lambda: self.move_forward()) # type: ignore
+        button.on_press(lambda: self.move_forward())  # type: ignore
 
     def _update_status(self, state: LaneState):
         self.print("Updating state to " + state.name)
@@ -41,7 +53,7 @@ class DuckLane:
         self.button.on_press(lambda: self.print("Button disabled during reset"))
         while self.sensor.distance() < self.start_pos:
             self.motor.start(-100)
-            time.sleep(.1)
+            time.sleep(0.1)
         self.motor.reset()
         self._update_status(LaneState.STOPPED)
         self.button.on_press(lambda: self.move_forward())
@@ -57,8 +69,8 @@ class DuckLane:
         self.motor.stop()
         self._update_status(LaneState.STOPPED)
 
-# Can detect speed in close to real time, check if stalled
-# Window function useful but not necessary
+    # Can detect speed in close to real time, check if stalled
+    # Window function useful but not necessary
 
     def update(self) -> None:
         if self.passed_finish_line():
@@ -73,6 +85,7 @@ class DuckLane:
         if distance < self.reset_distance:
             return True
         return False
+
 
 if __name__ == "__main__":
     controller = ArcadeController()
