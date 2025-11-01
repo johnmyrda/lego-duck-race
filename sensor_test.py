@@ -15,7 +15,3 @@ class TestFakeSensor(unittest.TestCase):
         self.assertIn("Testarooni", readout)
         distance = sensor.distance()
         self.assertIn(str(distance), readout)
-
-
-if __name__ == "__main__":
-    unittest.main()

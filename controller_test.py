@@ -23,7 +23,3 @@ class TestController(unittest.TestCase):
         joy.up = True
         joy.right = True
         self.assertEqual("↗", joy.debug())
-
-
-if __name__ == "__main__":
-    unittest.main()
