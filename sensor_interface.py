@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 import time
 
-class SensorInterface(ABC):
 
-    def __init__(self, name:str):
+class SensorInterface(ABC):
+    def __init__(self, name: str):
         self.name = name
 
     @abstractmethod
@@ -16,11 +16,10 @@ class SensorInterface(ABC):
 
 
 class FakeSensor(SensorInterface):
-
     def __init__(self, name: str):
         super().__init__(name)
         self.fake_distance = 25.0
 
     def distance(self) -> float:
-        time.sleep(.0001)
+        time.sleep(0.0001)
         return self.fake_distance

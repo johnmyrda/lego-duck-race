@@ -4,10 +4,10 @@ from sensor import Sensor
 from ducklane import DuckLane, LaneState
 import time
 
-class Game:
 
+class Game:
     def __init__(self, controller: ArcadeController, lanes: list[DuckLane]):
-        self.update_period_ns = 10 * 1000000 # 1000000 ns per ms
+        self.update_period_ns = 10 * 1000000  # 1000000 ns per ms
         self.last_update_time: int = 0
         controller.debug_info()
         print("Starting Duck Race")
@@ -33,7 +33,7 @@ class Game:
         if cur_direction != new_direction:
             direction_changed = True
             self.joystick_direction = new_direction
-            
+
         if new_direction == Direction.LEFT or new_direction == Direction.RIGHT:
             if joystick.down:
                 for i in range(len(self.lanes)):
@@ -45,17 +45,17 @@ class Game:
                     else:
                         self.lanes[i].motor.stop()
                 self.move_lane(self.selected_lane, new_direction)
-            return # Return early to avoid changing lane while moving
+            return  # Return early to avoid changing lane while moving
 
         if direction_changed:
             if new_direction == Direction.NONE:
                 if cur_direction == Direction.LEFT or cur_direction == Direction.RIGHT:
                     for lane in self.lanes:
                         lane.motor.stop()
-                    return # Return early to avoid changing lane while moving
+                    return  # Return early to avoid changing lane while moving
 
             if new_direction == Direction.UP:
-                self.selected_lane = max(self.selected_lane -1, 0)
+                self.selected_lane = max(self.selected_lane - 1, 0)
             if new_direction == Direction.DOWN:
                 self.selected_lane = min(self.selected_lane + 1, len(self.lanes) - 1)
 
@@ -79,9 +79,9 @@ class Game:
     def update(self):
         now = time.time_ns()
         elapsed_ns = now - self.last_update_time
-        if (elapsed_ns > self.update_period_ns):
+        if elapsed_ns > self.update_period_ns:
             self._update()
-            self.last_update_time = time.time_ns()    
+            self.last_update_time = time.time_ns()
 
     def reset_all(self):
         for lane in self.lanes:
@@ -98,6 +98,7 @@ class Game:
                 return lane
         else:
             return None
+
 
 if __name__ == "__main__":
     controller = ArcadeController()

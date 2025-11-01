@@ -1,13 +1,14 @@
 import time
 from enum import IntEnum
 
+
 class LogLevel(IntEnum):
     DEBUG = 1
     INFO = 2
     ERROR = 3
 
-class Logger:
 
+class Logger:
     def __init__(self, name: str, level: LogLevel = LogLevel.INFO):
         self.level = level
         self.name = name
@@ -29,9 +30,11 @@ class Logger:
     def log(self, message: str):
         print(self.name + ": " + message)
 
-class MeasurementLogger(Logger):
 
-    def __init__(self, min_period_ms: float, name: str, level: LogLevel = LogLevel.INFO):
+class MeasurementLogger(Logger):
+    def __init__(
+        self, min_period_ms: float, name: str, level: LogLevel = LogLevel.INFO
+    ):
         Logger.__init__(self, name, level)
         self.min_period_ns = min_period_ms * 1000000
         self.last_log_time: int = 0
@@ -53,12 +56,13 @@ class MeasurementLogger(Logger):
     def log(self, message: str):
         now = time.time_ns()
         elapsed_ns = now - self.last_log_time
-        if (elapsed_ns > self.min_period_ns):
+        if elapsed_ns > self.min_period_ns:
             print(self.name + ": " + message)
             self.last_log_time = time.time_ns()
             return
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     logger = MeasurementLogger(1000, "Test")
 
     try:

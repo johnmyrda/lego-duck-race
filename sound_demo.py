@@ -2,6 +2,7 @@ import pygame
 import pygame._sdl2.audio as sdl2_audio
 import time
 
+
 def get_devices(capture_devices: bool = False) -> tuple[str, ...]:
     init_by_me = not pygame.mixer.get_init()
     if init_by_me:
@@ -10,6 +11,7 @@ def get_devices(capture_devices: bool = False) -> tuple[str, ...]:
     if init_by_me:
         pygame.mixer.quit()
     return devices
+
 
 def play(file_path: str, device: str | None = None):
     if device is None:
@@ -22,7 +24,7 @@ def play(file_path: str, device: str | None = None):
     print("PyGame init params: " + str(pygame.mixer.get_init()))
     pygame.mixer.music.load(file_path)
     pygame.mixer.music.play()
-    crash_sfx = pygame.mixer.Sound('assets/crash.mp3')
+    crash_sfx = pygame.mixer.Sound("assets/crash.mp3")
     try:
         while True:
             crash_sfx.play()
