@@ -1,7 +1,8 @@
-from arcade_controller import ArcadeController, Button
+from arcade_controller import ArcadeController
 import time
 import threading
-from buildhat import Motor  # type: ignore
+
+from controller_base import Button
 from motor import LegoMotor
 from motor_interface import MotorInterface
 from sensor import Sensor

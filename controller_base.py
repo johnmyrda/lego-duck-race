@@ -16,7 +16,7 @@ class Button:
         self.on_press_function()
 
     def update_state(self, is_pressed: int) -> None:
-        if self.pressed == False and is_pressed:
+        if not self.pressed and is_pressed:
             self.press()
         self.pressed = is_pressed
 

@@ -1,7 +1,8 @@
 import hid  # type: ignore
 from typing import cast
 import time
-from controller_base import *
+
+from controller_base import ControllerBase
 
 
 # Manufacturer: Baolian industry Co., Ltd

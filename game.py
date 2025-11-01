@@ -1,4 +1,5 @@
-from arcade_controller import ArcadeController, Direction
+from arcade_controller import ArcadeController
+from controller_base import Direction
 from motor import LegoMotor
 from sensor import Sensor
 from ducklane import DuckLane, LaneState
@@ -72,7 +73,7 @@ class Game:
         #     lane.update()
         self.update_joystick()
         winner = self.get_winner()
-        if winner != None:
+        if winner is not None:
             print(f"Winner: {winner.name}")
             self.reset_all()
 

@@ -15,7 +15,7 @@ def detect_peripheral(constructor: Callable[..., Device]):
                 )
             )
             return peripheral
-        except DeviceError as err:
+        except DeviceError:
             pass
 
 
