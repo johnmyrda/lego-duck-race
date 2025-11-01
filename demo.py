@@ -1,5 +1,5 @@
 from arcade_controller import ArcadeController
-from peripherals import detectMotor, detectSensor
+from peripherals import detect_motor, detect_sensor
 import time
 from buildhat import Motor, ColorDistanceSensor
 from windowed_list import WindowedList
@@ -65,9 +65,9 @@ def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor
           controller.register_action('k1', lambda: move_forward(motor))
 
 if __name__ == "__main__":
-  controller = ArcadeController()
-  controller.debug_info()
-  motor = detectMotor()
-  sensor = detectSensor()
-  setup(controller, motor, sensor)
-  main(controller, motor, sensor)
+  _controller = ArcadeController()
+  _controller.debug_info()
+  _motor = detect_motor()
+  _sensor = detect_sensor()
+  setup(_controller, _motor, _sensor)
+  main(_controller, _motor, _sensor)

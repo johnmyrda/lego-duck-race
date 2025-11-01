@@ -26,7 +26,7 @@ class Sensor(SensorInterface):
         # Hack to make sure we don't read too often
         now = time.time_ns()
         elapsed_ns = now - self.last_measurement_time
-        if (elapsed_ns < 200000000): # 200 milliseconds
+        if elapsed_ns < 200000000: # 200 milliseconds
             return self.last_distance
 
         self.last_measurement_time = time.time_ns()
@@ -39,25 +39,25 @@ class Sensor(SensorInterface):
         GPIO.output(self.trigger, False)
     
 
-        TimeoutStartTime = time.time()
-        StartTime = time.time()
-        StopTime = time.time()
+        timeout_start_time = time.time()
+        start_time = time.time()
+        stop_time = time.time()
 
         # save StartTime
         while GPIO.input(self.echo) == 0:
-            StartTime = time.time()
+            start_time = time.time()
             # print ("StartTime: " + str(StartTime))
-            if ( StartTime - TimeoutStartTime ) > self.max_sensor_wait_time:
+            if ( start_time - timeout_start_time ) > self.max_sensor_wait_time:
                 return self.last_distance
 
         # save time of arrival
         while GPIO.input(self.echo) == 1:
-            StopTime = time.time()
-            if ( StopTime - TimeoutStartTime ) > self.max_sensor_wait_time:
+            stop_time = time.time()
+            if ( stop_time - timeout_start_time ) > self.max_sensor_wait_time:
                 return self.last_distance
 
         # time difference between start and arrival
-        TimeElapsed = StopTime - StartTime
+        TimeElapsed = stop_time - start_time
         # multiply with the sonic speed (34300 cm/s)
         # and divide by 2, because there and back
         distance = (TimeElapsed * 34300) / 2
