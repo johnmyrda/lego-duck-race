@@ -15,3 +15,9 @@ Code and setup instructions for Lego Duck Race project presented at Brickworld 2
 * Raspbperry Pi OS Lite (Debian Bookworm)
 * See [requirements.txt](requirements.txt) for Python Requirements
 * https://github.com/trezor/cython-hidapi
+
+
+## Running the code
+- `uv run game` : Run the main lego duck race game
+- `uv run demo` : Run a simplified demo for testing
+- `uv run ascii`: Run an ascii simulation of the game

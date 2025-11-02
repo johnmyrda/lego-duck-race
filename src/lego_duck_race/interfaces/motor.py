@@ -3,8 +3,8 @@ from typing import cast
 
 from buildhat import Motor  # type: ignore
 
-from motor_interface import MotorDirection, MotorInterface
-from windowed_list import WindowedList
+from ..utils.windowed_list import WindowedList
+from .motor_interface import MotorDirection, MotorInterface
 
 
 class LegoMotor(MotorInterface):

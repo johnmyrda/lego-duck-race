@@ -3,7 +3,7 @@ import time
 
 import RPi.GPIO as GPIO
 
-from sensor_interface import SensorInterface
+from .sensor_interface import SensorInterface
 
 
 # HC-SR04 Ultrasonic Distance Sensor

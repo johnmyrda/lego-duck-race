@@ -2,12 +2,12 @@ import threading
 import time
 from enum import Enum
 
-from arcade_controller import ArcadeController
-from controller_base import Button
-from measurement_logger import Logger, LogLevel, MeasurementLogger
-from motor import LegoMotor
-from motor_interface import MotorInterface
-from sensor import Sensor
+from .interfaces.arcade_controller import ArcadeController
+from .interfaces.controller_base import Button
+from .interfaces.motor import LegoMotor
+from .interfaces.motor_interface import MotorInterface
+from .interfaces.sensor import Sensor
+from .utils.measurement_logger import Logger, LogLevel, MeasurementLogger
 
 
 class LaneState(Enum):

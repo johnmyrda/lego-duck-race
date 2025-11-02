@@ -1,6 +1,6 @@
 import unittest
 
-from sensor_interface import FakeSensor
+from src.lego_duck_race.interfaces.sensor_interface import FakeSensor
 
 
 class TestFakeSensor(unittest.TestCase):
