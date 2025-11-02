@@ -62,7 +62,7 @@ def wave_path():
 def duck_path():
     path = Path()
     path.jump_to(20, 20)
-    path.move_straight_to(-70, 20, 30)
+    path.move_straight_to(70, 20, 30)
     return path
 
 
