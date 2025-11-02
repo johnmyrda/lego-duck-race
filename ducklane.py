@@ -1,13 +1,13 @@
-from arcade_controller import ArcadeController
-import time
 import threading
+import time
+from enum import Enum
 
+from arcade_controller import ArcadeController
 from controller_base import Button
+from measurement_logger import Logger, LogLevel, MeasurementLogger
 from motor import LegoMotor
 from motor_interface import MotorInterface
 from sensor import Sensor
-from measurement_logger import MeasurementLogger, LogLevel, Logger
-from enum import Enum
 
 
 class LaneState(Enum):
@@ -32,9 +32,7 @@ class DuckLane:
         self.sensor = sensor
         self.reset_distance = reset_distance
         self.start_pos = start_pos
-        self.sensor_logger = MeasurementLogger(
-            2000, "Sensor " + self.name, LogLevel.DEBUG
-        )
+        self.sensor_logger = MeasurementLogger(2000, "Sensor " + self.name, LogLevel.DEBUG)
         self.logger = Logger(self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward())  # type: ignore
@@ -82,9 +80,7 @@ class DuckLane:
     def passed_finish_line(self) -> bool:
         distance = self.sensor.distance()
         self.sensor_logger.debug(f"Distance={distance:.2f}cm")
-        if distance < self.reset_distance:
-            return True
-        return False
+        return distance < self.reset_distance
 
 
 if __name__ == "__main__":

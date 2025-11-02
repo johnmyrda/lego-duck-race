@@ -1,6 +1,7 @@
 # Libraries
-import RPi.GPIO as GPIO
 import time
+
+import RPi.GPIO as GPIO
 
 from sensor_interface import SensorInterface
 

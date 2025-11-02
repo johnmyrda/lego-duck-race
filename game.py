@@ -1,9 +1,10 @@
+import time
+
 from arcade_controller import ArcadeController
 from controller_base import Direction
+from ducklane import DuckLane, LaneState
 from motor import LegoMotor
 from sensor import Sensor
-from ducklane import DuckLane, LaneState
-import time
 
 
 class Game:
@@ -49,11 +50,12 @@ class Game:
             return  # Return early to avoid changing lane while moving
 
         if direction_changed:
-            if new_direction == Direction.NONE:
-                if cur_direction == Direction.LEFT or cur_direction == Direction.RIGHT:
-                    for lane in self.lanes:
-                        lane.motor.stop()
-                    return  # Return early to avoid changing lane while moving
+            if new_direction == Direction.NONE and (
+                cur_direction == Direction.LEFT or cur_direction == Direction.RIGHT
+            ):
+                for lane in self.lanes:
+                    lane.motor.stop()
+                return  # Return early to avoid changing lane while moving
 
             if new_direction == Direction.UP:
                 self.selected_lane = max(self.selected_lane - 1, 0)
@@ -68,7 +70,7 @@ class Game:
             lane.motor.start(-100)
 
     def _update(self):
-        controller.update_state()
+        _controller.update_state()
         # for lane in self.lanes:
         #     lane.update()
         self.update_joystick()
@@ -102,10 +104,10 @@ class Game:
 
 
 if __name__ == "__main__":
-    controller = ArcadeController()
-    button_a = controller.get_button("k1")
-    button_b = controller.get_button("k2")
-    button_c = controller.get_button("k3")
+    _controller = ArcadeController()
+    button_a = _controller.get_button("k1")
+    button_b = _controller.get_button("k2")
+    button_c = _controller.get_button("k3")
     # Lane A
     GPIO_TRIGGER_A = 23
     GPIO_ECHO_A = 24
@@ -124,6 +126,6 @@ if __name__ == "__main__":
     sensor_c = Sensor(GPIO_TRIGGER_C, GPIO_ECHO_C, "C")
     motor_c = LegoMotor("C")
     lane_c = DuckLane("C", motor_c, button_c, sensor_c)
-    game = Game(controller, [lane_a, lane_b, lane_c])
+    game = Game(_controller, [lane_a, lane_b, lane_c])
     while True:
         game.update()

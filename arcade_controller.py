@@ -1,6 +1,7 @@
-import hid  # type: ignore
-from typing import cast
 import time
+from typing import cast
+
+import hid  # type: ignore
 
 from controller_base import ControllerBase
 

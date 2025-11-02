@@ -1,5 +1,6 @@
-from sensor_interface import FakeSensor
 import unittest
+
+from sensor_interface import FakeSensor
 
 
 class TestFakeSensor(unittest.TestCase):
