@@ -24,8 +24,9 @@ dev = [
 ]
 
 [project.scripts]
-lego-duck-race = "lego_duck_race:main"
-ascii-duck-race = "lego_duck_race.ascii:main"
+game = "lego_duck_race.game:main"
+demo = "lego_duck_race.demo:main"
+ascii = "lego_duck_race.ascii:main"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]

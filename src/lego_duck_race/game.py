@@ -1,10 +1,10 @@
 import time
 
-from src.lego_duck_race.ducklane import DuckLane, LaneState
-from src.lego_duck_race.interfaces.arcade_controller import ArcadeController
-from src.lego_duck_race.interfaces.controller_base import Direction
-from src.lego_duck_race.interfaces.motor import LegoMotor
-from src.lego_duck_race.interfaces.sensor import Sensor
+from .ducklane import DuckLane, LaneState
+from .interfaces.arcade_controller import ArcadeController
+from .interfaces.controller_base import Direction
+from .interfaces.motor import LegoMotor
+from .interfaces.sensor import Sensor
 
 
 class Game:
@@ -70,7 +70,7 @@ class Game:
             lane.motor.start(-100)
 
     def _update(self):
-        _controller.update_state()
+        self.controller.update_state()
         # for lane in self.lanes:
         #     lane.update()
         self.update_joystick()
@@ -103,7 +103,7 @@ class Game:
             return None
 
 
-if __name__ == "__main__":
+def main():
     _controller = ArcadeController()
     button_a = _controller.get_button("k1")
     button_b = _controller.get_button("k2")

@@ -2,9 +2,9 @@ import time
 
 from buildhat import ColorDistanceSensor, Motor
 
-from src.lego_duck_race.interfaces.arcade_controller import ArcadeController
-from src.lego_duck_race.interfaces.peripherals import detect_motor, detect_sensor
-from src.lego_duck_race.utils.windowed_list import WindowedList
+from .interfaces.arcade_controller import ArcadeController
+from .interfaces.peripherals import detect_motor, detect_sensor
+from .utils.windowed_list import WindowedList
 
 
 def print_debug(motor: Motor):
@@ -61,7 +61,7 @@ def setup(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSenso
     controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
-def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
+def loop(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
     while True:
         controller.update_state()
         distance = sensor.get_distance()
@@ -73,10 +73,10 @@ def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor
             controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
-if __name__ == "__main__":
+def main():
     _controller = ArcadeController()
     _controller.debug_info()
     _motor = detect_motor()
     _sensor = detect_sensor()
     setup(_controller, _motor, _sensor)
-    main(_controller, _motor, _sensor)
+    loop(_controller, _motor, _sensor)
