@@ -1,4 +1,2 @@
-# Python Virtual Environment
-ldr-virtual-environment
-.vscode
+.idea
 __pycache__

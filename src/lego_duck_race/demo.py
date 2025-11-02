@@ -2,9 +2,9 @@ import time
 
 from buildhat import ColorDistanceSensor, Motor
 
-from arcade_controller import ArcadeController
-from peripherals import detect_motor, detect_sensor
-from windowed_list import WindowedList
+from src.lego_duck_race.interfaces.arcade_controller import ArcadeController
+from src.lego_duck_race.interfaces.peripherals import detect_motor, detect_sensor
+from src.lego_duck_race.utils.windowed_list import WindowedList
 
 
 def print_debug(motor: Motor):

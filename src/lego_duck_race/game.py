@@ -1,10 +1,10 @@
 import time
 
-from arcade_controller import ArcadeController
-from controller_base import Direction
-from ducklane import DuckLane, LaneState
-from motor import LegoMotor
-from sensor import Sensor
+from src.lego_duck_race.ducklane import DuckLane, LaneState
+from src.lego_duck_race.interfaces.arcade_controller import ArcadeController
+from src.lego_duck_race.interfaces.controller_base import Direction
+from src.lego_duck_race.interfaces.motor import LegoMotor
+from src.lego_duck_race.interfaces.sensor import Sensor
 
 
 class Game:

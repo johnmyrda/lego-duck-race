@@ -2,9 +2,9 @@ import time
 from typing import cast
 
 from buildhat import Motor  # type: ignore
-
 from motor_interface import MotorDirection, MotorInterface
-from windowed_list import WindowedList
+
+from src.lego_duck_race.utils.windowed_list import WindowedList
 
 
 class LegoMotor(MotorInterface):

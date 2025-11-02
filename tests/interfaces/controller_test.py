@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from controller_base import Button, FakeController, Joystick
+from src.lego_duck_race.interfaces.controller_base import Button, FakeController, Joystick
 
 
 class TestController(unittest.TestCase):
