@@ -32,9 +32,7 @@ class Logger:
 
 
 class MeasurementLogger(Logger):
-    def __init__(
-        self, min_period_ms: float, name: str, level: LogLevel = LogLevel.INFO
-    ):
+    def __init__(self, min_period_ms: float, name: str, level: LogLevel = LogLevel.INFO):
         Logger.__init__(self, name, level)
         self.min_period_ns = min_period_ms * 1000000
         self.last_log_time: int = 0

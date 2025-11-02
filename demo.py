@@ -1,7 +1,9 @@
+import time
+
+from buildhat import ColorDistanceSensor, Motor
+
 from arcade_controller import ArcadeController
 from peripherals import detect_motor, detect_sensor
-import time
-from buildhat import Motor, ColorDistanceSensor
 from windowed_list import WindowedList
 
 
@@ -56,7 +58,7 @@ def move_forward(motor: Motor):
 
 def setup(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
     sensor.on()
-    controller.register_action("k1", lambda: move_forward(motor))
+    controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
 def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
@@ -66,11 +68,9 @@ def main(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor
         # print("Distance=" + str(distance))
         if distance < 2:
             print("Resetting because distance=" + str(distance))
-            controller.register_action(
-                "k1", lambda: print("Button disabled during reset")
-            )
+            controller.get_button("k1").on_press(lambda: print("Button disabled during reset"))
             reset(motor)
-            controller.register_action("k1", lambda: move_forward(motor))
+            controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
 if __name__ == "__main__":

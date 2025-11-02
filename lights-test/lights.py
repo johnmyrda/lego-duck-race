@@ -1,6 +1,7 @@
+import time
+
 import board
 import neopixel
-import time
 from rainbowio import colorwheel
 
 red = (100, 0, 0)

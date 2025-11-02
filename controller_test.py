@@ -1,6 +1,7 @@
-from controller_base import Button, FakeController, Joystick
-from unittest.mock import Mock
 import unittest
+from unittest.mock import Mock
+
+from controller_base import Button, FakeController, Joystick
 
 
 class TestController(unittest.TestCase):
