@@ -3,7 +3,7 @@ import time
 from lego_duck_race.utils.measurement_logger import MeasurementLogger
 
 
-def test_measurement_logger():
+def test_measurement_logger() -> None:
     logger = MeasurementLogger(1000, "Test")
     logger.info("initial log")
     assert logger.last_log_time > 0
@@ -13,7 +13,7 @@ def test_measurement_logger():
     assert logger.last_log_time == first_log_time
 
 
-def test_measurement_logger_multiple():
+def test_measurement_logger_multiple() -> None:
     logger = MeasurementLogger(50, "Test")
     logger.info("initial log")
     assert logger.last_log_time > 0
