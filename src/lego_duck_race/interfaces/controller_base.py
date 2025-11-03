@@ -12,7 +12,7 @@ class Button:
     def on_press(self, action: Callable[..., None]) -> None:
         self.on_press_function = action
 
-    def press(self):
+    def press(self) -> None:
         self.on_press_function()
 
     def update_state(self, is_pressed: int) -> None:
@@ -36,14 +36,14 @@ class Joystick:
         self.left = False
         self.right = False
 
-    def update_state(self, up: bool, down: bool, left: bool, right: bool):
+    def update_state(self, up: bool, down: bool, left: bool, right: bool) -> None:
         self.up = up
         self.down = down
         self.left = left
         self.right = right
 
     # Print ←↖↑↗→↘↓↙ when appropriate
-    def debug(self):
+    def debug(self) -> str:
         # ↖↑↗
         if self.up:
             if self.left:
@@ -102,7 +102,7 @@ class ControllerBase(ABC):
         return self.button_map[name]
 
     @abstractmethod
-    def update_state(self):
+    def update_state(self) -> None:
         pass
 
 

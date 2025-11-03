@@ -1,18 +1,17 @@
-import unittest
-
 from src.lego_duck_race.interfaces.sensor_interface import FakeSensor
 
 
-class TestFakeSensor(unittest.TestCase):
-    def test_check_distance(self):
-        sensor = FakeSensor("Test Sensor")
-        distance = sensor.distance()
-        self.assertEqual(25.0, distance)
+def test_check_distance_test() -> None:
+    sensor = FakeSensor("Test Sensor")
+    distance = sensor.distance()
+    assert distance == 25.0
 
-    def test_readout(self):
-        sensor = FakeSensor("Testarooni")
-        readout = sensor.distance_readout()
-        print(readout)
-        self.assertIn("Testarooni", readout)
-        distance = sensor.distance()
-        self.assertIn(str(distance), readout)
+
+def test_readout_test() -> None:
+    sensor = FakeSensor("Testarooni")
+    readout = sensor.distance_readout()
+    print(readout)
+    assert "Testarooni" in readout
+    distance = sensor.distance()
+    sensor = FakeSensor("Testarooni")
+    assert str(distance) in readout

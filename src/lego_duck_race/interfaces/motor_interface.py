@@ -29,5 +29,5 @@ class MotorInterface(ABC):
     def stop(self) -> None:
         pass
 
-    def print(self, message: str):
+    def print(self, message: str) -> None:
         print(f"Motor {self.name}: {message}")

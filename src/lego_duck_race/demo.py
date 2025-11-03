@@ -7,12 +7,12 @@ from .interfaces.peripherals import detect_motor, detect_sensor
 from .utils.windowed_list import WindowedList
 
 
-def print_debug(motor: Motor):
+def print_debug(motor: Motor) -> None:
     data = motor.get()
     print("Speed, Pos, Apos: " + str(data))
 
 
-def reset(motor: Motor):
+def reset(motor: Motor) -> None:
     motor_started = False
     motor_started_forwards = False
     motor_stalled = False
@@ -46,7 +46,7 @@ def reset(motor: Motor):
     motor.stop()
 
 
-def move_forward(motor: Motor):
+def move_forward(motor: Motor) -> None:
     print("Moving forward!")
     motor.run_for_degrees(-500, 50)
     print("Done moving")
@@ -56,12 +56,12 @@ def move_forward(motor: Motor):
 # Window function useful but not necessary
 
 
-def setup(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
+def setup(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor) -> None:
     sensor.on()
     controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
-def loop(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor):
+def loop(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor) -> None:
     while True:
         controller.update_state()
         distance = sensor.get_distance()
@@ -73,7 +73,7 @@ def loop(controller: ArcadeController, motor: Motor, sensor: ColorDistanceSensor
             controller.get_button("k1").on_press(lambda: move_forward(motor))
 
 
-def main():
+def main() -> None:
     _controller = ArcadeController()
     _controller.debug_info()
     _motor = detect_motor()

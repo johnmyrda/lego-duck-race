@@ -4,7 +4,7 @@ class WindowedList:
         self.windowed_list = [0] * size
         self.readings = 0
 
-    def push(self, value: int):
+    def push(self, value: int) -> None:
         self.windowed_list.append(value)
         self.windowed_list.pop(0)
         self.readings += 1
@@ -15,8 +15,8 @@ class WindowedList:
     def all_same(self) -> bool:
         return self.windowed_list.count(self.windowed_list[0]) == self.size
 
-    def stalled(self):
+    def stalled(self) -> bool:
         return self.readings >= self.size and self.all_same() and self.mean() == 0.0
 
-    def moving(self):
+    def moving(self) -> bool:
         return self.readings >= self.size and self.mean() != 0.0
