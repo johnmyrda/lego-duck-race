@@ -47,7 +47,7 @@ class ArcadeController(ControllerBase):
                 self.joystick.up = report[4] == 0
                 self.joystick.down = report[4] == 255
 
-    def debug_info(self):
+    def debug_info(self) -> None:
         gamepad = self.controller  # type: ignore
         print("Error: " + gamepad.error())  # type: ignore
         print("Manufacturer: " + gamepad.get_manufacturer_string())  # type: ignore

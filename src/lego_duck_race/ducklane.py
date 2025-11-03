@@ -37,11 +37,11 @@ class DuckLane:
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward())  # type: ignore
 
-    def _update_status(self, state: LaneState):
+    def _update_status(self, state: LaneState) -> None:
         self.print("Updating state to " + state.name)
         self.status = state
 
-    def reset(self):
+    def reset(self) -> None:
         if self.status != LaneState.RESETTING:
             self._update_status(LaneState.RESETTING)
             self.logger.debug("Resetting with distance=" + str(self.sensor.distance()))
@@ -74,7 +74,7 @@ class DuckLane:
         if self.passed_finish_line():
             self.reset()
 
-    def print(self, message: str):
+    def print(self, message: str) -> None:
         print(f"Lane {self.name}: {message}")
 
     def passed_finish_line(self) -> bool:

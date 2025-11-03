@@ -19,7 +19,7 @@ class Game:
         self.selected_lane = 0
 
     # Controls are reversed due to joystick placement
-    def update_joystick(self):
+    def update_joystick(self) -> None:
         joystick = self.controller.joystick
         cur_direction = self.joystick_direction
         new_direction = Direction.NONE
@@ -62,14 +62,14 @@ class Game:
             if new_direction == Direction.DOWN:
                 self.selected_lane = min(self.selected_lane + 1, len(self.lanes) - 1)
 
-    def move_lane(self, lane_index: int, direction: Direction):
+    def move_lane(self, lane_index: int, direction: Direction) -> None:
         lane = self.lanes[lane_index]
         if direction == Direction.LEFT:
             lane.motor.start(100)
         elif direction == Direction.RIGHT:
             lane.motor.start(-100)
 
-    def _update(self):
+    def _update(self) -> None:
         self.controller.update_state()
         # for lane in self.lanes:
         #     lane.update()
@@ -79,14 +79,14 @@ class Game:
             print(f"Winner: {winner.name}")
             self.reset_all()
 
-    def update(self):
+    def update(self) -> None:
         now = time.time_ns()
         elapsed_ns = now - self.last_update_time
         if elapsed_ns > self.update_period_ns:
             self._update()
             self.last_update_time = time.time_ns()
 
-    def reset_all(self):
+    def reset_all(self) -> None:
         for lane in self.lanes:
             if lane.status == LaneState.RESETTING:
                 pass
@@ -103,7 +103,7 @@ class Game:
             return None
 
 
-def main():
+def main() -> None:
     _controller = ArcadeController()
     button_a = _controller.get_button("k1")
     button_b = _controller.get_button("k2")

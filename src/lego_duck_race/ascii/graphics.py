@@ -53,20 +53,20 @@ class Duck(Sprite):
         )
 
 
-def wave_path():
+def wave_path() -> Path:
     path = Path()
     path.jump_to(20, 25)
     return path
 
 
-def duck_path():
+def duck_path() -> Path:
     path = Path()
     path.jump_to(20, 20)
     path.move_straight_to(70, 20, 30)
     return path
 
 
-def demo(screen: Screen):
+def demo(screen: Screen) -> None:
     effects: list[Effect] = [
         Wave(screen, wave_path(), Screen.COLOUR_BLUE, 0, 60),
         Duck(screen, duck_path(), Screen.COLOUR_YELLOW, 0, 60),
