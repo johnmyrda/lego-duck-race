@@ -45,17 +45,3 @@ class MeasurementLogger(Logger):
                 print(self.name + ": " + message)
                 self.last_log_time = time.time_ns()
                 return
-
-
-if __name__ == "__main__":
-    logger = MeasurementLogger(1000, "Test")
-
-    try:
-        while True:
-            now = time.time_ns()
-            elapsed_ns = now - logger.last_log_time
-            logger.info("elapsed=" + str(elapsed_ns / 1000000000.0) + "s")
-
-        # Reset by pressing CTRL + C
-    except KeyboardInterrupt:
-        print("Exiting...")
