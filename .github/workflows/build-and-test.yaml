@@ -23,7 +23,7 @@ jobs:
         run: uv sync --locked --all-extras --dev
 
       - name: Ruff linter
-        run: uv
+        run: uv run ruff check --output-format=github
         continue-on-error: true
 
       - name: Tests
