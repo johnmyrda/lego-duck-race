@@ -24,7 +24,6 @@ jobs:
 
       - name: Ruff linter
         run: uv run ruff check --output-format=github
-        continue-on-error: true
 
       - name: Tests
         run: uv run pytest
