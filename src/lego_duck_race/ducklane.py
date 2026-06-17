@@ -2,12 +2,13 @@ import threading
 import time
 from enum import Enum
 
+from lego_duck_race.interfaces.limit_switch import get_limit_switch
 from .interfaces.arcade_controller import ArcadeController
 from .interfaces.controller_base import Button
 from .interfaces.motor import LegoMotor
 from .interfaces.motor_interface import MotorInterface
-from .interfaces.sensor import Sensor
-from .utils.measurement_logger import Logger, LogLevel, MeasurementLogger
+from .utils.measurement_logger import Logger, LogLevel
+from gpiozero import Button as LimitSwitch
 
 
 class LaneState(Enum):
@@ -22,17 +23,16 @@ class DuckLane:
         name: str,
         motor: MotorInterface,
         button: Button,
-        sensor: Sensor,
+        limit_switch: LimitSwitch,
         reset_distance: int = 5,
         start_pos: int = 36,
     ):
         self.button = button
         self.name = name
         self.motor = motor
-        self.sensor = sensor
+        self.limit_switch = limit_switch
         self.reset_distance = reset_distance
         self.start_pos = start_pos
-        self.sensor_logger = MeasurementLogger(2000, "Sensor " + self.name, LogLevel.DEBUG)
         self.logger = Logger(self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward())  # type: ignore
@@ -44,14 +44,12 @@ class DuckLane:
     def reset(self) -> None:
         if self.status != LaneState.RESETTING:
             self._update_status(LaneState.RESETTING)
-            self.logger.debug("Resetting with distance=" + str(self.sensor.distance()))
+            self.logger.debug("Resetting!")
             threading.Thread(target=self._reset, daemon=True).start()
 
     def _reset(self) -> None:
         self.button.on_press(lambda: self.print("Button disabled during reset"))
-        while self.sensor.distance() < self.start_pos:
-            self.motor.start(-100)
-            time.sleep(0.1)
+        self.motor.start(-100)
         self.motor.reset()
         self._update_status(LaneState.STOPPED)
         self.button.on_press(lambda: self.move_forward())
@@ -78,38 +76,30 @@ class DuckLane:
         print(f"Lane {self.name}: {message}")
 
     def passed_finish_line(self) -> bool:
-        distance = self.sensor.distance()
-        self.sensor_logger.debug(f"Distance={distance:.2f}cm")
-        return distance < self.reset_distance
+        return self.limit_switch.is_active
 
-
-if __name__ == "__main__":
+def test():
+    print("Ducklane starting...")
     controller = ArcadeController()
     controller.debug_info()
     button_a = controller.get_button("k1")
     button_b = controller.get_button("k2")
     button_c = controller.get_button("k3")
     # Lane A
-    GPIO_TRIGGER_A = 23
-    GPIO_ECHO_A = 24
-    sensor_a = Sensor(GPIO_TRIGGER_A, GPIO_ECHO_A, "A")
     motor_a = LegoMotor("A")
-    lane_a = DuckLane("A", motor_a, button_a, sensor_a)
-    # Lane B
-    GPIO_TRIGGER_B = 25
-    GPIO_ECHO_B = 5
-    sensor_b = Sensor(GPIO_TRIGGER_B, GPIO_ECHO_B, "B")
+    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"))
+    # # Lane B
     motor_b = LegoMotor("B")
-    lane_b = DuckLane("B", motor_b, button_b, sensor_b)
-    # Lane C
-    GPIO_TRIGGER_C = 6
-    GPIO_ECHO_C = 12
-    sensor_c = Sensor(GPIO_TRIGGER_C, GPIO_ECHO_C, "C")
+    lane_b = DuckLane("B", motor_b, button_b, get_limit_switch("B"))
+    # # Lane C
     motor_c = LegoMotor("C")
-    lane_c = DuckLane("C", motor_c, button_c, sensor_c)
+    lane_c = DuckLane("C", motor_c, button_c, get_limit_switch("C"))
     print("Ducklane starting")
     while True:
         controller.update_state()
         lane_a.update()
         lane_b.update()
         lane_c.update()
+
+if __name__ == "__main__":
+    test()

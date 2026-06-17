@@ -3,8 +3,8 @@ import time
 from .ducklane import DuckLane, LaneState
 from .interfaces.arcade_controller import ArcadeController
 from .interfaces.controller_base import Direction
+from .interfaces.limit_switch import get_limit_switch
 from .interfaces.motor import LegoMotor
-from .interfaces.sensor import Sensor
 
 
 class Game:
@@ -109,23 +109,14 @@ def main() -> None:
     button_b = _controller.get_button("k2")
     button_c = _controller.get_button("k3")
     # Lane A
-    GPIO_TRIGGER_A = 23
-    GPIO_ECHO_A = 24
-    sensor_a = Sensor(GPIO_TRIGGER_A, GPIO_ECHO_A, "A")
     motor_a = LegoMotor("A")
-    lane_a = DuckLane("A", motor_a, button_a, sensor_a, start_pos=47)
+    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"), start_pos=47)
     # Lane B
-    GPIO_TRIGGER_B = 25
-    GPIO_ECHO_B = 5
-    sensor_b = Sensor(GPIO_TRIGGER_B, GPIO_ECHO_B, "B")
     motor_b = LegoMotor("B")
-    lane_b = DuckLane("B", motor_b, button_b, sensor_b)
+    lane_b = DuckLane("B", motor_b, button_b, get_limit_switch("B"))
     # Lane C
-    GPIO_TRIGGER_C = 6
-    GPIO_ECHO_C = 12
-    sensor_c = Sensor(GPIO_TRIGGER_C, GPIO_ECHO_C, "C")
     motor_c = LegoMotor("C")
-    lane_c = DuckLane("C", motor_c, button_c, sensor_c)
+    lane_c = DuckLane("C", motor_c, button_c, get_limit_switch("C"))
     game = Game(_controller, [lane_a, lane_b, lane_c])
     while True:
         game.update()

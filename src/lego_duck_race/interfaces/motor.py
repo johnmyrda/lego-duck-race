@@ -1,4 +1,5 @@
 import time
+from dataclasses import dataclass
 from typing import cast
 
 from buildhat import Motor  # type: ignore
@@ -59,3 +60,65 @@ class LegoMotor(MotorInterface):
 
     def speed(self) -> int:
         return cast(int, (self.motor.get_speed() * self.direction))
+
+
+def test_motor(motor: LegoMotor):
+    print("  Testing motor: " + motor.name)
+    print("  Starting motor with speed 100")
+    motor.start(100)
+    time.sleep(2)
+    print("  " + motor.debug())
+    time.sleep(2)
+    print("  Stopping motor")
+    motor.stop()
+    time.sleep(1)
+    print("  " + motor.debug())
+    time.sleep(1)
+    print("  Starting motor with speed -100")
+    motor.start(-100)
+    time.sleep(2)
+    print("  " + motor.debug())
+    time.sleep(2)
+    print("  Stopping motor")
+    motor.stop()
+    print("  Done testing motor: " + motor.name)
+
+
+@dataclass
+class TestResult:
+    port: str
+    success: bool = False
+
+
+def test():
+    print("Motor Test starting...")
+    motor_tests = [
+        TestResult("A"),
+        TestResult("B"),
+        TestResult("C"),
+        TestResult("D")
+    ]
+    max_connection_attempts = 100
+    connection_attempts = 0
+    while connection_attempts < max_connection_attempts and not all(t.success for t in motor_tests):
+        for motor_test in motor_tests:
+            if motor_test.success:
+                continue
+            print(f"Connecting to motor {motor_test.port} (attempt {connection_attempts + 1}/{max_connection_attempts})")
+            try:
+                motor = LegoMotor(motor_test.port)
+                test_motor(motor)
+                motor_test.success = True
+                break
+            except Exception as e:
+                print("  Failed to initialize motor " + motor_test.port + ": " + str(e))
+                time.sleep(1)
+            connection_attempts += 1
+
+
+    print("Test results")
+    for motor_test in motor_tests:
+        print(f"Motor {motor_test.port}: {'SUCCESS' if motor_test.success else 'FAIL'}")
+
+if __name__ == "__main__":
+    test()
