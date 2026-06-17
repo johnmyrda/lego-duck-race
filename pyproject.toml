@@ -37,6 +37,7 @@ ascii = "lego_duck_race.ascii:main"
 lane_test = "lego_duck_race.ducklane:test"
 controller_test = "lego_duck_race.interfaces.arcade_controller:test"
 motor_test = "lego_duck_race.interfaces.motor:test"
+switch_test = "lego_duck_race.interfaces.limit_switch:test"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]

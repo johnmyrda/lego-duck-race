@@ -2,6 +2,7 @@ import threading
 import time
 from enum import Enum
 
+from lego_duck_race.interfaces.limit_switch import get_limit_switch
 from .interfaces.arcade_controller import ArcadeController
 from .interfaces.controller_base import Button
 from .interfaces.motor import LegoMotor
@@ -85,17 +86,14 @@ def test():
     button_b = controller.get_button("k2")
     button_c = controller.get_button("k3")
     # Lane A
-    SWITCH_GPIO_A = 17
     motor_a = LegoMotor("A")
-    lane_a = DuckLane("D", motor_a, button_a, LimitSwitch(SWITCH_GPIO_A))
+    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"))
     # # Lane B
-    SWITCH_GPIO_B = 5
     motor_b = LegoMotor("B")
-    lane_b = DuckLane("B", motor_b, button_b, LimitSwitch(SWITCH_GPIO_B))
+    lane_b = DuckLane("B", motor_b, button_b, get_limit_switch("B"))
     # # Lane C
-    SWITCH_GPIO_C = 26
     motor_c = LegoMotor("C")
-    lane_c = DuckLane("C", motor_c, button_c, LimitSwitch(SWITCH_GPIO_C))
+    lane_c = DuckLane("C", motor_c, button_c, get_limit_switch("C"))
     print("Ducklane starting")
     while True:
         controller.update_state()
