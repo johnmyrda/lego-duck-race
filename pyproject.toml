@@ -9,29 +9,34 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "asciimatics>=1.15.0",
-    "textual>=6.5.0",
+    "rpi-lgpio>=0.6",
+    "textual>=8.2.7",
+    "ty>=0.0.48",
 ]
 
-[optional-dependencies]
+[project.optional-dependencies]
 interfaces = [
-    "adafruit-circuitpython-neopixel==6.3.18",
+    "adafruit-circuitpython-neopixel==6.4.2",
     "buildhat==0.9.0",
     "gpiozero==2.0.1",
-    "hidapi==0.14.0.post4",
+    "hidapi==0.15.0",
+    "RPi.GPIO>=0.7.1",
+    "rpi-ws281x>=5.0.0",
 ]
 
 [dependency-groups]
 dev = [
-    "pyright>=1.1.407",
-    "pytest>=8.4.2",
-    "ruff>=0.14.3",
+    "pytest>=9.0.3",
+    "ruff>=0.15.7",
 ]
 
 [project.scripts]
 game = "lego_duck_race.game:main"
 demo = "lego_duck_race.demo:main"
 ascii = "lego_duck_race.ascii:main"
-
+lane_test = "lego_duck_race.ducklane:test"
+controller_test = "lego_duck_race.interfaces.arcade_controller:test"
+motor_test = "lego_duck_race.interfaces.motor:test"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]

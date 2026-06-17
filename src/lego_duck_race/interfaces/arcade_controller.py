@@ -56,11 +56,14 @@ class ArcadeController(ControllerBase):
         print("HID Report Descriptor: " + str(gamepad.get_report_descriptor()))  # type: ignore
 
 
-# Simple test program to output input states
-if __name__ == "__main__":
+def test():
     # Initialize Gamepad
     controller = ArcadeController()
     controller.debug_info()
     while True:
         controller.update_state()
         print(controller.joystick.debug(), end="\r")
+
+# Simple test program to output input states
+if __name__ == "__main__":
+    test()
