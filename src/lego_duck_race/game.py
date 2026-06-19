@@ -12,7 +12,7 @@ class Game:
         self.update_period_ns = 10 * 1000000  # 1000000 ns per ms
         self.last_update_time: int = 0
         controller.debug_info()
-        print("Starting Duck Race")
+        print("Starting Duck Race...")
         self.controller = controller
         self.lanes = lanes
         self.joystick_direction = Direction.NONE
@@ -110,7 +110,7 @@ def main() -> None:
     button_c = _controller.get_button("k3")
     # Lane A
     motor_a = LegoMotor("A")
-    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"), start_pos=47)
+    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"))
     # Lane B
     motor_b = LegoMotor("B")
     lane_b = DuckLane("B", motor_b, button_b, get_limit_switch("B"))
@@ -118,5 +118,6 @@ def main() -> None:
     motor_c = LegoMotor("C")
     lane_c = DuckLane("C", motor_c, button_c, get_limit_switch("C"))
     game = Game(_controller, [lane_a, lane_b, lane_c])
+    print("Game initialized!")
     while True:
         game.update()

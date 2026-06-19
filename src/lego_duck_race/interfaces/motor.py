@@ -22,7 +22,7 @@ class LegoMotor(MotorInterface):
         motor_started_forwards = False
         motor_stalled = False
         speed_window = WindowedList(8)
-        reset_speed = -30
+        reset_speed = -50
         self.stop()
         while not motor_started and not motor_stalled:
             self.start(reset_speed)
@@ -96,7 +96,7 @@ def test():
         TestResult("A"),
         TestResult("B"),
         TestResult("C"),
-        TestResult("D")
+        # TestResult("D")
     ]
     max_connection_attempts = 100
     connection_attempts = 0

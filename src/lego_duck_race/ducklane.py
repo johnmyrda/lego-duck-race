@@ -7,7 +7,6 @@ from .interfaces.arcade_controller import ArcadeController
 from .interfaces.controller_base import Button
 from .interfaces.motor import LegoMotor
 from .interfaces.motor_interface import MotorInterface
-from .utils.measurement_logger import Logger, LogLevel
 from gpiozero import Button as LimitSwitch
 
 
@@ -23,17 +22,12 @@ class DuckLane:
         name: str,
         motor: MotorInterface,
         button: Button,
-        limit_switch: LimitSwitch,
-        reset_distance: int = 5,
-        start_pos: int = 36,
+        limit_switch: LimitSwitch
     ):
         self.button = button
         self.name = name
         self.motor = motor
         self.limit_switch = limit_switch
-        self.reset_distance = reset_distance
-        self.start_pos = start_pos
-        self.logger = Logger(self.name, LogLevel.DEBUG)
         self.status = LaneState.STOPPED
         button.on_press(lambda: self.move_forward())  # type: ignore
 
@@ -44,7 +38,7 @@ class DuckLane:
     def reset(self) -> None:
         if self.status != LaneState.RESETTING:
             self._update_status(LaneState.RESETTING)
-            self.logger.debug("Resetting!")
+            self.print("Resetting!")
             threading.Thread(target=self._reset, daemon=True).start()
 
     def _reset(self) -> None:
@@ -52,6 +46,7 @@ class DuckLane:
         self.motor.start(-100)
         self.motor.reset()
         self._update_status(LaneState.STOPPED)
+        self.print("Reset Complete!")
         self.button.on_press(lambda: self.move_forward())
 
     def move_forward(self) -> None:
