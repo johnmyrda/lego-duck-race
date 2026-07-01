@@ -1,17 +1,24 @@
 import time
+from typing import Protocol
 
-from .ducklane import DuckLane, LaneState
-from .interfaces.arcade_controller import ArcadeController
-from .interfaces.controller_base import Direction
-from .interfaces.limit_switch import get_limit_switch
-from .interfaces.motor import LegoMotor
+from lego_duck_race.ducklane import DuckLane, LaneState
+from lego_duck_race.hardware.factory import build_hardware_lanes
+from lego_duck_race.hardware.hid_controller import ArcadeController
+from lego_duck_race.interfaces.controller_base import Direction, Joystick
+
+
+class Controller(Protocol):
+    joystick: Joystick
+
+    def update_state(self) -> None:
+        """Refresh controller state from its backing implementation."""
+        ...
 
 
 class Game:
-    def __init__(self, controller: ArcadeController, lanes: list[DuckLane]):
+    def __init__(self, controller: Controller, lanes: list[DuckLane]):
         self.update_period_ns = 10 * 1000000  # 1000000 ns per ms
         self.last_update_time: int = 0
-        controller.debug_info()
         print("Starting Duck Race...")
         self.controller = controller
         self.lanes = lanes
@@ -46,7 +53,6 @@ class Game:
                         self.move_lane(i, new_direction)
                     else:
                         self.lanes[i].motor.stop()
-                self.move_lane(self.selected_lane, new_direction)
             return  # Return early to avoid changing lane while moving
 
         if direction_changed:
@@ -71,8 +77,6 @@ class Game:
 
     def _update(self) -> None:
         self.controller.update_state()
-        # for lane in self.lanes:
-        #     lane.update()
         self.update_joystick()
         winner = self.get_winner()
         if winner is not None:
@@ -99,25 +103,13 @@ class Game:
                 return None
             if lane.passed_finish_line():
                 return lane
-        else:
-            return None
+        return None
 
 
 def main() -> None:
-    _controller = ArcadeController()
-    button_a = _controller.get_button("k1")
-    button_b = _controller.get_button("k2")
-    button_c = _controller.get_button("k3")
-    # Lane A
-    motor_a = LegoMotor("A")
-    lane_a = DuckLane("A", motor_a, button_a, get_limit_switch("A"))
-    # Lane B
-    motor_b = LegoMotor("B")
-    lane_b = DuckLane("B", motor_b, button_b, get_limit_switch("B"))
-    # Lane C
-    motor_c = LegoMotor("C")
-    lane_c = DuckLane("C", motor_c, button_c, get_limit_switch("C"))
-    game = Game(_controller, [lane_a, lane_b, lane_c])
+    controller = ArcadeController()
+    controller.debug_info()
+    game = Game(controller, build_hardware_lanes(controller))
     print("Game initialized!")
     while True:
         game.update()

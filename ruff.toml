@@ -1,10 +1,10 @@
-
 line-length = 100
+extend-exclude = ["demos"]
 
 [lint]
 select = [
     # pycodestyle
-    "E","W",
+    "E", "W",
     # Pyflakes
     "F",
     # pyupgrade

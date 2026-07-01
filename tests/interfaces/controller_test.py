@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from src.lego_duck_race.interfaces.controller_base import Button, FakeController, Joystick
+from lego_duck_race.interfaces.controller_base import Button, FakeController, Joystick
 
 
 def test_button_press() -> None:

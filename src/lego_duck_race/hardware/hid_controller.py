@@ -3,7 +3,7 @@ from typing import cast
 
 import hid  # type: ignore
 
-from .controller_base import ControllerBase
+from lego_duck_race.interfaces.controller_base import ControllerBase
 
 
 # Manufacturer: Baolian industry Co., Ltd
@@ -56,14 +56,17 @@ class ArcadeController(ControllerBase):
         print("HID Report Descriptor: " + str(gamepad.get_report_descriptor()))  # type: ignore
 
 
-def test():
-    # Initialize Gamepad
+def diagnose_controller() -> None:
+    """Print controller metadata and live joystick state until interrupted."""
     controller = ArcadeController()
     controller.debug_info()
+    print("Move the joystick or press buttons. Press Ctrl+C to stop.")
     while True:
         controller.update_state()
-        print(controller.joystick.debug(), end="\r")
+        pressed = [name for name, button in controller.button_map.items() if button.pressed]
+        print(f"Joystick: {controller.joystick.debug()} Buttons: {pressed}", end="\r")
+
 
 # Simple test program to output input states
 if __name__ == "__main__":
-    test()
+    diagnose_controller()

@@ -6,18 +6,20 @@ Run with: sudo python3 ws2812b_test.py
 """
 
 import time
+
 import board
 import neopixel
 
 # ── Config ────────────────────────────────────────────────────────────────────
-PIN        = board.D21   # GPIO 21
-NUM_LEDS   = 44          # adjust to your strip length
-BRIGHTNESS = 0.4         # 0.0–1.0  (keep low for bench testing)
-ORDER      = neopixel.GRB  # most WS2812b strips are GRB
+PIN = board.D21  # GPIO 21
+NUM_LEDS = 44  # adjust to your strip length
+BRIGHTNESS = 0.4  # 0.0–1.0  (keep low for bench testing)
+ORDER = neopixel.GRB  # most WS2812b strips are GRB
 # ─────────────────────────────────────────────────────────────────────────────
 
 pixels = neopixel.NeoPixel(
-    PIN, NUM_LEDS,
+    PIN,
+    NUM_LEDS,
     brightness=BRIGHTNESS,
     auto_write=False,
     pixel_order=ORDER,
@@ -50,6 +52,7 @@ def chase(color, delay=0.05, passes=3):
 
 def rainbow_cycle(delay=0.01, passes=2):
     """Full rainbow across the strip."""
+
     def wheel(pos):
         pos = pos % 255
         if pos < 85:

@@ -1,0 +1,10 @@
+lanes:
+  - name: A
+    button_name: k1
+    limit_switch_gpio: 27
+  - name: B
+    button_name: k2
+    limit_switch_gpio: 5
+  - name: C
+    button_name: k3
+    limit_switch_gpio: 26

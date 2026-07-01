@@ -4,8 +4,8 @@ from typing import cast
 
 from buildhat import Motor  # type: ignore
 
-from ..utils.windowed_list import WindowedList
-from .motor_interface import MotorDirection, MotorInterface
+from lego_duck_race.interfaces.motor_interface import MotorDirection, MotorInterface
+from lego_duck_race.utils.windowed_list import WindowedList
 
 
 class LegoMotor(MotorInterface):
@@ -62,7 +62,7 @@ class LegoMotor(MotorInterface):
         return cast(int, (self.motor.get_speed() * self.direction))
 
 
-def test_motor(motor: LegoMotor):
+def test_motor(motor: LegoMotor) -> None:
     print("  Testing motor: " + motor.name)
     print("  Starting motor with speed 100")
     motor.start(100)
@@ -90,7 +90,8 @@ class TestResult:
     success: bool = False
 
 
-def test():
+def diagnose_motors() -> None:
+    """Connect to Build HAT motors and verify basic forward/backward/stop operations."""
     print("Motor Test starting...")
     motor_tests = [
         TestResult("A"),
@@ -104,7 +105,10 @@ def test():
         for motor_test in motor_tests:
             if motor_test.success:
                 continue
-            print(f"Connecting to motor {motor_test.port} (attempt {connection_attempts + 1}/{max_connection_attempts})")
+            print(
+                f"Connecting to motor {motor_test.port} "
+                f"(attempt {connection_attempts + 1}/{max_connection_attempts})"
+            )
             try:
                 motor = LegoMotor(motor_test.port)
                 test_motor(motor)
@@ -115,10 +119,10 @@ def test():
                 time.sleep(1)
             connection_attempts += 1
 
-
     print("Test results")
     for motor_test in motor_tests:
         print(f"Motor {motor_test.port}: {'SUCCESS' if motor_test.success else 'FAIL'}")
 
+
 if __name__ == "__main__":
-    test()
+    diagnose_motors()
