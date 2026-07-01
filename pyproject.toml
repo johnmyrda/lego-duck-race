@@ -11,7 +11,6 @@ dependencies = [
     "asciimatics>=1.15.0",
     "pydantic>=2.12.5",
     "pydantic-settings[yaml]>=2.14.2",
-    "ruff>=0.15.17",
     "textual>=8.2.8",
 ]
 

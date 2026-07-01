@@ -2,8 +2,6 @@ import time
 from typing import Protocol
 
 from lego_duck_race.ducklane import DuckLane, LaneState
-from lego_duck_race.hardware.factory import build_hardware_lanes
-from lego_duck_race.hardware.hid_controller import ArcadeController
 from lego_duck_race.interfaces.controller_base import Direction, Joystick
 
 
@@ -107,6 +105,9 @@ class Game:
 
 
 def main() -> None:
+    from lego_duck_race.hardware.factory import build_hardware_lanes
+    from lego_duck_race.hardware.hid_controller import ArcadeController
+
     controller = ArcadeController()
     controller.debug_info()
     game = Game(controller, build_hardware_lanes(controller))

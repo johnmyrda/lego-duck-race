@@ -242,7 +242,6 @@ dependencies = [
     { name = "asciimatics" },
     { name = "pydantic" },
     { name = "pydantic-settings", extra = ["yaml"] },
-    { name = "ruff" },
     { name = "textual" },
 ]
 
@@ -276,7 +275,6 @@ requires-dist = [
     { name = "rpi-gpio", marker = "extra == 'hardware'", specifier = ">=0.7.1" },
     { name = "rpi-lgpio", marker = "extra == 'hardware'", specifier = ">=0.6" },
     { name = "rpi-ws281x", marker = "extra == 'hardware'", specifier = ">=5.0.0" },
-    { name = "ruff", specifier = ">=0.15.17" },
     { name = "textual", specifier = ">=8.2.8" },
 ]
 provides-extras = ["hardware"]
